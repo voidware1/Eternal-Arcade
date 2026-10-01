@@ -1119,127 +1119,98 @@ async function getGameInfo(file) {
    LOAD PLAY LIBRARY
 ========================================================= */
 
-async function loadGames() {
-
-    gameGrid.innerHTML = `
-        <div class="loading">
-            Loading play...
-        </div>
-    `;
-
-
-    const apiUrl =
-        `https://api.github.com/repos/` +
-        `${GITHUB_OWNER}/` +
-        `${GITHUB_REPO}/` +
-        `contents/${PLAY_FOLDER}?ref=${GITHUB_BRANCH}`;
-
-
+async function getGameInfo(file) {
     try {
-
-        const response =
-            await fetch(apiUrl);
-
+        const response = await fetch(file.download_url);
 
         if (!response.ok) {
-
-            throw new Error(
-                `GitHub API returned ${response.status}`
-            );
-
+            return {
+                title: "",
+                icon: null
+            };
         }
 
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
 
-        const files =
-            await response.json();
+        // Get game title
+        const title = doc.title?.trim() || "";
 
+        // Get the game's <base href>
+        let baseURL = file.download_url;
 
-        /*
-            Only use HTML files.
+        const base = doc.querySelector("base[href]");
 
-            We explicitly ignore index.html
-            just in case one is ever added.
-        */
-
-        const htmlFiles =
-            files.filter(file => {
-
-                return (
-                    file.type === "file" &&
-                    /\.html$/i.test(file.name) &&
-                    file.name.toLowerCase() !==
-                        "index.html"
-                );
-
-            });
-
-
-        if (!htmlFiles.length) {
-
-            gameGrid.innerHTML = `
-                <div class="empty">
-                    Nothing is available yet.
-                </div>
-            `;
-
-            return;
-
+        if (base) {
+            try {
+                baseURL = new URL(
+                    base.getAttribute("href"),
+                    file.download_url
+                ).href;
+            } catch (e) {
+                console.warn("Invalid base URL:", e);
+            }
         }
 
-
-        /*
-            Read all UGS files.
-
-            Promise.all allows the icons
-            to load in parallel.
-        */
-
-        games =
-            await Promise.all(
-                htmlFiles.map(
-                    file =>
-                        getGameInfo(file)
-                )
-            );
-
-
-        /*
-            Alphabetical order
-        */
-
-        games.sort((a, b) =>
-            a.name.localeCompare(
-                b.name
+        // Find all possible icons
+        const iconLinks = [
+            ...doc.querySelectorAll(
+                'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
             )
-        );
+        ];
 
+        let bestIcon = null;
+        let bestSize = 0;
 
-        renderGames();
+        for (const link of iconLinks) {
+            const href = link.getAttribute("href");
 
+            if (!href) continue;
+
+            let size = 0;
+
+            const sizes = link.getAttribute("sizes") || "";
+
+            const match = sizes.match(/(\d+)\s*x\s*(\d+)/i);
+
+            if (match) {
+                size = Number(match[1]) * Number(match[2]);
+            }
+
+            if (!bestIcon || size > bestSize) {
+                bestIcon = href;
+                bestSize = size;
+            }
+        }
+
+        // Convert the relative icon path into the actual UGS icon URL
+        let icon = null;
+
+        if (bestIcon) {
+            try {
+                icon = new URL(bestIcon, baseURL).href;
+            } catch (e) {
+                console.warn("Could not resolve icon:", bestIcon);
+            }
+        }
+
+        console.log("Game:", title);
+        console.log("Icon:", icon);
+
+        return {
+            title,
+            icon
+        };
 
     } catch (error) {
+        console.warn("Game info failed:", file.name, error);
 
-        console.error(error);
-
-
-        gameGrid.innerHTML = `
-            <div class="error">
-                <strong>
-                    Could not load Play.
-                </strong>
-                <br><br>
-                Make sure the repository is public
-                and that the <strong>play</strong>
-                folder exists.
-                <br><br>
-                ${escapeHtml(error.message)}
-            </div>
-        `;
-
+        return {
+            title: "",
+            icon: null
+        };
     }
-
 }
-
 
 /* =========================================================
    RENDER GAMES

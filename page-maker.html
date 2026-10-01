@@ -1037,90 +1037,120 @@ async function loadPlayMore() {
 
 
 async function getGameIcon(url) {
-
     try {
-
-        const response =
-            await fetch(url);
+        const response = await fetch(url);
 
         if (!response.ok) {
             return null;
         }
 
-        const html =
-            await response.text();
+        const html = await response.text();
 
-        const doc =
-            new DOMParser()
-                .parseFromString(
-                    html,
-                    "text/html"
-                );
+        const doc = new DOMParser().parseFromString(
+            html,
+            "text/html"
+        );
 
-        const baseElement =
-            doc.querySelector("base");
+        /*
+         * UGS commonly has:
+         *
+         * <base href="https://cdn.../game/">
+         *
+         * followed by:
+         *
+         * <link rel="icon" href="icons/icon-512x512.png">
+         */
+
+        const baseElement = doc.querySelector("base");
 
         let baseURL = url;
 
-        if (
-            baseElement &&
-            baseElement.getAttribute("href")
-        ) {
+        if (baseElement) {
+            const baseHref =
+                baseElement.getAttribute("href");
 
-            baseURL =
-                new URL(
-                    baseElement.getAttribute("href"),
-                    url
-                ).href;
+            if (baseHref) {
+                baseURL =
+                    new URL(
+                        baseHref,
+                        url
+                    ).href;
+            }
         }
 
-        const icons =
-            Array.from(
-                doc.querySelectorAll(
-                    'link[rel~="icon"]'
-                )
-            );
+        const icons = Array.from(
+            doc.querySelectorAll(
+                'link[rel~="icon"], link[rel="shortcut icon"]'
+            )
+        );
 
         if (!icons.length) {
             return null;
         }
 
-        icons.sort(function(a, b) {
+        /*
+         * Find the largest icon.
+         */
 
-            function size(element) {
+        let bestIcon = null;
+        let bestSize = 0;
 
-                const value =
-                    element.getAttribute("sizes") || "";
+        for (const icon of icons) {
 
-                const match =
-                    value.match(/(\\d+)x(\\d+)/);
+            const href =
+                icon.getAttribute("href");
 
-                if (!match) {
-                    return 0;
-                }
-
-                return (
-                    Number(match[1]) *
-                    Number(match[2])
-                );
+            if (!href) {
+                continue;
             }
 
-            return size(b) - size(a);
-        });
+            const sizes =
+                icon.getAttribute("sizes") || "";
 
-        const href =
-            icons[0].getAttribute("href");
+            let size = 0;
 
-        if (!href) {
+            const match =
+                sizes.match(/(\d+)\s*x\s*(\d+)/i);
+
+            if (match) {
+                size =
+                    Number(match[1]) *
+                    Number(match[2]);
+            }
+
+            /*
+             * If no size was supplied, still allow
+             * the icon to be used.
+             */
+
+            if (!bestIcon || size > bestSize) {
+                bestIcon = href;
+                bestSize = size;
+            }
+        }
+
+        if (!bestIcon) {
             return null;
         }
 
-        return new URL(
-            href,
-            baseURL
-        ).href;
+        /*
+         * Resolve the UGS icon against its BASE URL.
+         */
+
+        const iconURL =
+            new URL(
+                bestIcon,
+                baseURL
+            ).href;
+
+        return iconURL;
 
     } catch (error) {
+
+        console.warn(
+            "Icon detection failed:",
+            error
+        );
 
         return null;
     }
