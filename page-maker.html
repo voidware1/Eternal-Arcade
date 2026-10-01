@@ -17,15 +17,13 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    overflow-x: hidden;
     color: #f5f0ff;
     font-family: Arial, sans-serif;
     background:
         radial-gradient(circle at 50% -10%, rgba(125,45,220,.28), transparent 40%),
         #050308;
+    overflow-x: hidden;
 }
-
-/* PARTICLES */
 
 #particles {
     position: fixed;
@@ -42,7 +40,7 @@ body {
     border-radius: 50%;
     background: #9b4dff;
     box-shadow: 0 0 10px #9b4dff;
-    opacity: .55;
+    opacity: .5;
     animation: floatParticle linear infinite;
 }
 
@@ -55,13 +53,11 @@ body {
     }
 }
 
-/* HEADER */
-
 header {
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 55px 20px 30px;
+    padding: 50px 20px 30px;
 }
 
 .moon {
@@ -88,17 +84,14 @@ header {
 }
 
 h1 {
-    margin: 22px 0 8px;
+    margin: 20px 0 7px;
     font-size: clamp(2rem, 5vw, 3.5rem);
-    letter-spacing: -1px;
 }
 
 .subtitle {
-    color: #a99bb8;
     margin: 0;
+    color: #93889f;
 }
-
-/* MAIN */
 
 .container {
     width: min(1150px, calc(100% - 30px));
@@ -108,15 +101,13 @@ h1 {
     padding-bottom: 80px;
 }
 
-/* GLASS */
-
 .glass {
     background: rgba(16, 10, 23, .68);
     border: 1px solid rgba(155, 77, 255, .28);
     box-shadow:
         0 15px 50px rgba(0,0,0,.4),
         inset 0 1px rgba(255,255,255,.05),
-        0 0 30px rgba(112, 35, 180, .08);
+        0 0 30px rgba(112,35,180,.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 22px;
@@ -128,8 +119,8 @@ h1 {
 }
 
 .panel-title {
-    margin: 0 0 15px;
-    font-size: 20px;
+    margin: 0 0 10px;
+    font-size: 21px;
 }
 
 .panel-description {
@@ -138,18 +129,16 @@ h1 {
     margin-bottom: 15px;
 }
 
-/* INPUTS */
-
 input,
 textarea {
     width: 100%;
     color: #f5f0ff;
-    background: rgba(5, 3, 8, .72);
+    background: rgba(5, 3, 8, .78);
     border: 1px solid rgba(155, 77, 255, .25);
     outline: none;
     border-radius: 15px;
-    transition: .2s;
     font-family: monospace;
+    transition: .2s;
 }
 
 input {
@@ -170,8 +159,6 @@ textarea:focus {
     box-shadow: 0 0 20px rgba(155,77,255,.18);
 }
 
-/* BUTTONS */
-
 button {
     border: 1px solid rgba(174,108,255,.35);
     color: white;
@@ -188,21 +175,12 @@ button {
     cursor: pointer;
     font-weight: bold;
     transition: .2s;
-    box-shadow:
-        inset 0 1px rgba(255,255,255,.07),
-        0 5px 20px rgba(0,0,0,.25);
 }
 
 button:hover {
     transform: translateY(-2px);
     border-color: rgba(190,130,255,.75);
-    box-shadow:
-        0 0 25px rgba(155,77,255,.25),
-        inset 0 1px rgba(255,255,255,.1);
-}
-
-button:active {
-    transform: translateY(0);
+    box-shadow: 0 0 25px rgba(155,77,255,.25);
 }
 
 .button-row {
@@ -210,8 +188,6 @@ button:active {
     gap: 10px;
     flex-wrap: wrap;
 }
-
-/* PREVIEW */
 
 .preview-wrapper {
     overflow: hidden;
@@ -236,12 +212,6 @@ button:active {
     background: #050308;
 }
 
-/* CODE */
-
-.code-box {
-    position: relative;
-}
-
 #generatedCode {
     min-height: 450px;
 }
@@ -252,28 +222,24 @@ button:active {
     margin-top: 12px;
 }
 
-/* STATUS */
-
 .status {
-    margin-top: 12px;
+    margin-top: 13px;
     min-height: 20px;
-    color: #a99bb8;
+    color: #93889f;
     font-size: 13px;
 }
 
 .status.success {
-    color: #b889ff;
+    color: #bd8cff;
 }
 
 .status.error {
-    color: #ff7bce;
+    color: #ff75c8;
 }
 
-/* SMALL SCREEN */
-
 @media (max-width: 700px) {
-    header {
-        padding-top: 35px;
+    .container {
+        width: calc(100% - 18px);
     }
 
     .panel {
@@ -282,10 +248,6 @@ button:active {
 
     #preview {
         height: 550px;
-    }
-
-    textarea {
-        min-height: 260px;
     }
 }
 </style>
@@ -298,49 +260,47 @@ button:active {
 <header>
     <div class="moon"></div>
     <h1>Eternal Arcade</h1>
-    <p class="subtitle">Game Page Maker</p>
+    <p class="subtitle">Liquid Glass Page Maker</p>
 </header>
 
 <main class="container">
-
-    <!-- UGS INPUT -->
 
     <section class="glass panel">
 
         <h2 class="panel-title">UGS HTML</h2>
 
         <div class="panel-description">
-            Paste the complete Ultimate Game Stash HTML below.
+            Copy and paste the complete UGS HTML into the box below.
         </div>
 
         <input
             id="gameName"
             type="text"
-            placeholder="Game filename, example: ddlc.html"
+            placeholder="Game filename — example: ddlc.html"
         >
 
         <textarea
             id="ugsInput"
             spellcheck="false"
-            placeholder="Paste your UGS HTML here..."
+            placeholder="Paste the complete UGS HTML here..."
         ></textarea>
 
         <div class="button-row">
-            <button onclick="generatePage()">
+
+            <button id="generateButton">
                 ✨ Generate Page
             </button>
 
-            <button onclick="clearMaker()">
+            <button id="clearButton">
                 Clear
             </button>
+
         </div>
 
         <div id="status" class="status"></div>
 
     </section>
 
-
-    <!-- PREVIEW -->
 
     <section class="glass panel">
 
@@ -349,43 +309,38 @@ button:active {
         <div class="preview-wrapper">
 
             <div class="preview-header">
-                Eternal Arcade Game Page
+                Generated Eternal Arcade Game Page
             </div>
 
             <iframe
                 id="preview"
-                title="Game page preview"
-            ></iframe>
+                title="Generated game preview"
+                sandbox="allow-scripts allow-forms allow-modals allow-popups allow-pointer-lock allow-same-origin">
+            </iframe>
 
         </div>
 
     </section>
 
 
-    <!-- GENERATED CODE -->
-
     <section class="glass panel">
 
-        <h2 class="panel-title">Generated Page Code</h2>
+        <h2 class="panel-title">Generated Code</h2>
 
         <div class="panel-description">
-            Copy this code into a new HTML file inside your
+            Copy this entire code into a new HTML file inside your
             <b>/play/</b> folder.
         </div>
 
-        <div class="code-box">
-
-            <textarea
-                id="generatedCode"
-                spellcheck="false"
-                placeholder="Generated HTML will appear here..."
-            ></textarea>
-
-        </div>
+        <textarea
+            id="generatedCode"
+            spellcheck="false"
+            placeholder="Your generated HTML will appear here..."
+        ></textarea>
 
         <div class="copy-row">
 
-            <button onclick="copyCode()">
+            <button id="copyButton">
                 📋 Copy Code
             </button>
 
@@ -395,21 +350,25 @@ button:active {
 
 </main>
 
+
 <script>
-
-/* =========================
+/* =========================================
    PARTICLES
-========================= */
+========================================= */
 
-const particleContainer = document.getElementById("particles");
+const particleContainer =
+    document.getElementById("particles");
 
 for (let i = 0; i < 70; i++) {
 
-    const particle = document.createElement("div");
+    const particle =
+        document.createElement("div");
 
     particle.className = "particle";
 
-    particle.style.left = Math.random() * 100 + "%";
+    particle.style.left =
+        Math.random() * 100 + "%";
+
     particle.style.animationDuration =
         (8 + Math.random() * 18) + "s";
 
@@ -423,9 +382,9 @@ for (let i = 0; i < 70; i++) {
 }
 
 
-/* =========================
+/* =========================================
    SETTINGS
-========================= */
+========================================= */
 
 const AD_URL =
     "https://games4fun.org/ads/banner.html";
@@ -434,88 +393,51 @@ const GITHUB_API =
     "https://api.github.com/repos/voidware1/Eternal-Arcade/contents/play?ref=main";
 
 
-/* =========================
-   GENERATE
-========================= */
+/* =========================================
+   ELEMENTS
+========================================= */
 
-function generatePage() {
+const ugsInput =
+    document.getElementById("ugsInput");
 
-    const ugsHTML =
-        document.getElementById("ugsInput").value.trim();
+const gameNameInput =
+    document.getElementById("gameName");
 
-    const gameName =
-        document.getElementById("gameName").value.trim();
+const generatedCode =
+    document.getElementById("generatedCode");
 
-    const status =
-        document.getElementById("status");
+const preview =
+    document.getElementById("preview");
 
-    if (!ugsHTML) {
+const status =
+    document.getElementById("status");
 
-        status.textContent =
-            "Paste your UGS HTML first.";
 
-        status.className =
-            "status error";
+/* =========================================
+   STATUS
+========================================= */
 
-        return;
-    }
+function showStatus(message, type) {
 
-    /*
-       Convert the complete UGS HTML into Base64.
-
-       This lets the generated page contain
-       the pasted game directly.
-    */
-
-    const encodedGame =
-        encodeBase64Unicode(ugsHTML);
-
-    const safeName =
-        gameName ||
-        "game.html";
-
-    const generated =
-        createGamePage(encodedGame, safeName);
-
-    document.getElementById("generatedCode").value =
-        generated;
-
-    /*
-       Preview using a Blob URL.
-    */
-
-    const blob =
-        new Blob(
-            [generated],
-            { type: "text/html" }
-        );
-
-    const previewURL =
-        URL.createObjectURL(blob);
-
-    document.getElementById("preview").src =
-        previewURL;
-
-    status.textContent =
-        "Page generated successfully.";
+    status.textContent = message;
 
     status.className =
-        "status success";
+        "status " + (type || "");
 }
 
 
-/* =========================
-   BASE64
-========================= */
+/* =========================================
+   ENCODE HTML
+========================================= */
 
-function encodeBase64Unicode(text) {
+function encodeHTML(text) {
 
     const bytes =
         new TextEncoder().encode(text);
 
     let binary = "";
 
-    const chunkSize = 0x8000;
+    const chunkSize = 8192;
 
     for (
         let i = 0;
@@ -523,11 +445,15 @@ function encodeBase64Unicode(text) {
         i += chunkSize
     ) {
 
-        binary += String.fromCharCode(
-            ...bytes.subarray(
+        const chunk =
+            bytes.subarray(
                 i,
                 i + chunkSize
-            )
+            );
+
+        binary += String.fromCharCode.apply(
+            null,
+            chunk
         );
     }
 
@@ -535,29 +461,129 @@ function encodeBase64Unicode(text) {
 }
 
 
-/* =========================
-   GENERATED PAGE
-========================= */
+/* =========================================
+   GENERATE
+========================================= */
 
-function createGamePage(
+function generatePage() {
+
+    try {
+
+        const html =
+            ugsInput.value.trim();
+
+        let filename =
+            gameNameInput.value.trim();
+
+        if (!html) {
+
+            showStatus(
+                "Paste your UGS HTML first.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (!filename) {
+            filename = "game.html";
+        }
+
+        if (!/\.html?$/i.test(filename)) {
+            filename += ".html";
+        }
+
+        showStatus(
+            "Generating page...",
+            ""
+        );
+
+        const encoded =
+            encodeHTML(html);
+
+        const code =
+            buildGeneratedPage(
+                encoded,
+                filename
+            );
+
+        generatedCode.value = code;
+
+        /*
+         * Use a Blob for the preview.
+         */
+
+        const blob =
+            new Blob(
+                [code],
+                {
+                    type: "text/html"
+                }
+            );
+
+        const url =
+            URL.createObjectURL(blob);
+
+        preview.src = url;
+
+        showStatus(
+            "Page generated successfully!",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        generatedCode.value = "";
+
+        preview.src =
+            "about:blank";
+
+        showStatus(
+            "Generator error: " +
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+/* =========================================
+   GENERATED PAGE
+========================================= */
+
+function buildGeneratedPage(
     encodedGame,
-    currentGame
+    filename
 ) {
 
-return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+    const filenameJSON =
+        JSON.stringify(filename);
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    /*
+     * IMPORTANT:
+     * This generated page is constructed
+     * with normal strings instead of another
+     * nested template literal.
+     */
 
-<title>Eternal Arcade</title>
+    let code = "";
 
-<style>
+    code += "<!DOCTYPE html>\n";
+    code += '<html lang="en">\n';
+    code += "<head>\n";
 
+    code += '<meta charset="UTF-8">\n';
+
+    code += '<meta name="viewport" ';
+    code += 'content="width=device-width, initial-scale=1.0">\n';
+
+    code += "<title>Eternal Arcade</title>\n";
+
+    code += "<style>\n";
+
+    code += `
 * {
     box-sizing: border-box;
 }
@@ -581,25 +607,10 @@ body {
     overflow-x: hidden;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(
-            circle,
-            rgba(155,77,255,.65) 1px,
-            transparent 2px
-        );
-    background-size: 80px 80px;
-    opacity: .12;
-}
-
 .container {
     width: min(1200px, calc(100% - 24px));
     margin: auto;
-    padding-bottom: 50px;
+    padding-bottom: 60px;
 }
 
 .glass {
@@ -616,14 +627,11 @@ body::before {
 
 .ad {
     margin: 12px 0;
-
     overflow: hidden;
-
     min-height: 90px;
-
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
 .ad iframe {
@@ -636,126 +644,81 @@ body::before {
     padding: 10px;
 }
 
-.game-frame {
+#gameFrame {
     width: 100%;
     height: 75vh;
     min-height: 500px;
-
     display: block;
-
     border: 0;
     border-radius: 14px;
-
     background: #000;
 }
 
 .controls {
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
+    gap: 10px;
     padding: 14px 4px 4px;
 }
 
 button {
     border: 1px solid rgba(174,108,255,.35);
-
     color: white;
-
     background:
         linear-gradient(
             135deg,
             rgba(155,77,255,.35),
             rgba(103,33,198,.16)
         );
-
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-
     padding: 12px 18px;
-
     border-radius: 13px;
-
     cursor: pointer;
-
     font-weight: bold;
-
     transition: .2s;
 }
 
 button:hover {
     transform: translateY(-2px);
-
-    border-color:
-        rgba(190,130,255,.75);
-
-    box-shadow:
-        0 0 25px rgba(155,77,255,.25);
+    border-color: rgba(190,130,255,.75);
+    box-shadow: 0 0 25px rgba(155,77,255,.25);
 }
 
 .section-title {
-    margin:
-        32px 4px 15px;
-
-    font-size: 25px;
+    margin: 32px 4px 15px;
 }
 
 .play-more {
     display: grid;
-
     grid-template-columns:
-        repeat(
-            auto-fill,
-            minmax(145px, 1fr)
-        );
-
+        repeat(auto-fill, minmax(145px, 1fr));
     gap: 15px;
 }
 
 .game-card {
     position: relative;
-
     aspect-ratio: 1 / 1;
-
     overflow: hidden;
-
     border-radius: 17px;
-
-    border:
-        1px solid rgba(155,77,255,.25);
-
-    background:
-        rgba(16,10,23,.72);
-
+    border: 1px solid rgba(155,77,255,.25);
+    background: rgba(16,10,23,.72);
     cursor: pointer;
-
     text-decoration: none;
-
     color: white;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,.25);
-
     transition: .25s;
 }
 
 .game-card:hover {
-    transform:
-        translateY(-5px)
-        scale(1.02);
-
-    border-color:
-        rgba(170,100,255,.75);
-
-    box-shadow:
-        0 10px 35px rgba(155,77,255,.2);
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(170,100,255,.75);
+    box-shadow: 0 10px 35px rgba(155,77,255,.2);
 }
 
 .game-card img {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
     transition: .25s;
 }
 
@@ -764,52 +727,31 @@ button:hover {
     transform: scale(1.08);
 }
 
-.game-card-title {
+.game-title {
     position: absolute;
-
     inset: 0;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     text-align: center;
-
     padding: 15px;
-
     font-weight: bold;
-    font-size: 17px;
-
     opacity: 0;
-
     transition: .25s;
 }
 
-.game-card:hover
-.game-card-title {
+.game-card:hover .game-title {
     opacity: 1;
 }
 
-.fallback-icon {
+.fallback {
     width: 100%;
     height: 100%;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     font-size: 45px;
-
     color: #9b4dff;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(155,77,255,.18),
-            transparent 65%
-        );
 }
 
 .loading {
@@ -819,7 +761,7 @@ button:hover {
 
 @media (max-width: 700px) {
 
-    .game-frame {
+    #gameFrame {
         height: 65vh;
         min-height: 400px;
     }
@@ -829,117 +771,98 @@ button:hover {
     }
 
     .play-more {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(0, 1fr)
-            );
+        grid-template-columns: repeat(2, 1fr);
     }
 }
+`;
 
-</style>
-</head>
+    code += "</style>\n";
+    code += "</head>\n";
 
-<body>
+    code += "<body>\n";
 
-<div class="container">
+    code += '<main class="container">\n';
 
-    <!-- AD -->
+    /* AD */
 
-    <div class="glass ad">
+    code += '<div class="glass ad">\n';
 
-        <iframe
-            src="${AD_URL}"
-            title="Advertisement"
-            loading="lazy"
-            scrolling="no">
-        </iframe>
+    code += '<iframe ';
+    code += 'src="' + AD_URL + '" ';
+    code += 'title="Advertisement" ';
+    code += 'scrolling="no" ';
+    code += 'loading="lazy"></iframe>\n';
 
-    </div>
-
-
-    <!-- GAME -->
-
-    <div class="glass game-panel">
-
-        <iframe
-            id="gameFrame"
-            class="game-frame"
-            title="Game">
-        </iframe>
-
-        <div class="controls">
-
-            <button onclick="fullscreenGame()">
-                ⛶ Fullscreen
-            </button>
-
-            <button onclick="openAboutBlank()">
-                ↗ Open About:Blank
-            </button>
-
-        </div>
-
-    </div>
+    code += "</div>\n";
 
 
-    <!-- PLAY MORE -->
+    /* GAME */
 
-    <h2 class="section-title">
-        🎮 Play More
-    </h2>
+    code += '<section class="glass game-panel">\n';
 
-    <div
-        id="playMore"
-        class="play-more">
-        <div class="loading">
-            Loading games...
-        </div>
-    </div>
+    code += '<iframe ';
+    code += 'id="gameFrame" ';
+    code += 'title="Game"></iframe>\n';
 
-</div>
+    code += '<div class="controls">\n';
 
+    code += '<button onclick="fullscreenGame()">';
+    code += "⛶ Fullscreen";
+    code += "</button>\n";
 
-<script>
+    code += '<button onclick="openAboutBlank()">';
+    code += "↗ Open About:Blank";
+    code += "</button>\n";
 
-/* =========================
-   GAME DATA
-========================= */
+    code += "</div>\n";
 
-const GAME_DATA =
-    "${encodedGame}";
-
-const CURRENT_GAME =
-    ${JSON.stringify(currentGame)};
+    code += "</section>\n";
 
 
-/* =========================
-   LOAD GAME
-========================= */
+    /* PLAY MORE */
 
+    code += '<h2 class="section-title">🎮 Play More</h2>\n';
+
+    code += '<div id="playMore" class="play-more">';
+    code += '<div class="loading">Loading games...</div>';
+    code += "</div>\n";
+
+    code += "</main>\n";
+
+
+    /* SCRIPT */
+
+    code += "<script>\n";
+
+    code += "const GAME_DATA = ";
+    code += JSON.stringify(encodedGame);
+    code += ";\n";
+
+    code += "const CURRENT_GAME = ";
+    code += filenameJSON;
+    code += ";\n";
+
+    code += `
 function decodeGame() {
 
-    const binary =
-        atob(GAME_DATA);
+    const binary = atob(GAME_DATA);
 
     const bytes =
-        Uint8Array.from(
-            binary,
-            char => char.charCodeAt(0)
-        );
+        new Uint8Array(binary.length);
 
-    return new TextDecoder()
-        .decode(bytes);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+
+    return new TextDecoder().decode(bytes);
 }
 
-const gameHTML =
-    decodeGame();
+const gameHTML = decodeGame();
 
-const gameBlob =
-    new Blob(
-        [gameHTML],
-        { type: "text/html" }
-    );
+const gameBlob = new Blob(
+    [gameHTML],
+    { type: "text/html" }
+);
 
 const gameURL =
     URL.createObjectURL(gameBlob);
@@ -948,38 +871,23 @@ document.getElementById("gameFrame").src =
     gameURL;
 
 
-/* =========================
-   FULLSCREEN
-========================= */
-
 function fullscreenGame() {
 
     const frame =
         document.getElementById("gameFrame");
 
     if (frame.requestFullscreen) {
-
         frame.requestFullscreen();
-
     } else if (frame.webkitRequestFullscreen) {
-
         frame.webkitRequestFullscreen();
-
     }
 }
 
 
-/* =========================
-   ABOUT BLANK
-========================= */
-
 function openAboutBlank() {
 
     const win =
-        window.open(
-            "about:blank",
-            "_blank"
-        );
+        window.open("about:blank", "_blank");
 
     if (!win) {
 
@@ -991,22 +899,14 @@ function openAboutBlank() {
     }
 
     win.document.open();
-
-    win.document.write(
-        gameHTML
-    );
-
+    win.document.write(gameHTML);
     win.document.close();
-
 }
 
 
-/* =========================
-   PLAY MORE
-========================= */
-
 const API =
     "https://api.github.com/repos/voidware1/Eternal-Arcade/contents/play?ref=main";
+
 
 async function loadPlayMore() {
 
@@ -1019,28 +919,23 @@ async function loadPlayMore() {
             await fetch(API);
 
         if (!response.ok) {
-            throw new Error(
-                "GitHub API returned " +
-                response.status
-            );
+            throw new Error("GitHub API error");
         }
 
         const files =
             await response.json();
 
         const games =
-            files.filter(file =>
+            files.filter(function(file) {
 
-                file.type === "file" &&
+                return (
+                    file.type === "file" &&
+                    file.name.toLowerCase().endsWith(".html") &&
+                    file.name !== "index.html" &&
+                    file.name !== CURRENT_GAME
+                );
 
-                file.name.toLowerCase()
-                    .endsWith(".html") &&
-
-                file.name !== "index.html" &&
-
-                file.name !== CURRENT_GAME
-
-            );
+            });
 
         if (!games.length) {
 
@@ -1052,21 +947,14 @@ async function loadPlayMore() {
 
         container.innerHTML = "";
 
-        /*
-           Limit the Play More section so huge
-           libraries don't overload the page.
-        */
-
-        const selected =
-            games.slice(0, 24);
-
-        for (const file of selected) {
+        for (
+            const file of games.slice(0, 24)
+        ) {
 
             const card =
                 document.createElement("a");
 
-            card.className =
-                "game-card";
+            card.className = "game-card";
 
             card.href =
                 "play/" +
@@ -1092,11 +980,8 @@ async function loadPlayMore() {
                 const fallback =
                     document.createElement("div");
 
-                fallback.className =
-                    "fallback-icon";
-
-                fallback.textContent =
-                    "🎮";
+                fallback.className = "fallback";
+                fallback.textContent = "🎮";
 
                 card.appendChild(fallback);
             }
@@ -1104,41 +989,37 @@ async function loadPlayMore() {
             const title =
                 document.createElement("div");
 
-            title.className =
-                "game-card-title";
+            title.className = "game-title";
 
             title.textContent =
                 cleanFilename(file.name);
 
-            /*
-               Try to get the real UGS title.
-            */
-
             try {
 
-                const html =
-                    await fetch(
-                        file.download_url
-                    ).then(r => r.text());
+                const gameResponse =
+                    await fetch(file.download_url);
+
+                const gameHTML =
+                    await gameResponse.text();
 
                 const doc =
                     new DOMParser()
                         .parseFromString(
-                            html,
+                            gameHTML,
                             "text/html"
                         );
 
-                if (
-                    doc.title &&
-                    doc.title.trim()
-                ) {
-
+                if (doc.title.trim()) {
                     title.textContent =
                         doc.title.trim();
-
                 }
 
-            } catch {}
+            } catch (error) {
+                console.log(
+                    "Could not read title:",
+                    error
+                );
+            }
 
             card.appendChild(title);
 
@@ -1150,14 +1031,10 @@ async function loadPlayMore() {
         console.error(error);
 
         container.innerHTML =
-            '<div class="loading">Unable to load games right now.</div>';
+            '<div class="loading">Unable to load games.</div>';
     }
 }
 
-
-/* =========================
-   ICON DETECTION
-========================= */
 
 async function getGameIcon(url) {
 
@@ -1180,16 +1057,22 @@ async function getGameIcon(url) {
                     "text/html"
                 );
 
-        const base =
+        const baseElement =
             doc.querySelector("base");
 
-        const baseURL =
-            base && base.href
-                ? new URL(
-                    base.href,
+        let baseURL = url;
+
+        if (
+            baseElement &&
+            baseElement.getAttribute("href")
+        ) {
+
+            baseURL =
+                new URL(
+                    baseElement.getAttribute("href"),
                     url
-                  ).href
-                : url;
+                ).href;
+        }
 
         const icons =
             Array.from(
@@ -1202,21 +1085,15 @@ async function getGameIcon(url) {
             return null;
         }
 
-        /*
-           Prefer the largest icon.
-        */
+        icons.sort(function(a, b) {
 
-        icons.sort((a, b) => {
+            function size(element) {
 
-            const getSize = el => {
-
-                const sizes =
-                    el.getAttribute("sizes") || "";
+                const value =
+                    element.getAttribute("sizes") || "";
 
                 const match =
-                    sizes.match(
-                        /(\\d+)x(\\d+)/
-                    );
+                    value.match(/(\\d+)x(\\d+)/);
 
                 if (!match) {
                     return 0;
@@ -1226,14 +1103,13 @@ async function getGameIcon(url) {
                     Number(match[1]) *
                     Number(match[2])
                 );
-            };
+            }
 
-            return getSize(b) - getSize(a);
+            return size(b) - size(a);
         });
 
         const href =
-            icons[0]
-                .getAttribute("href");
+            icons[0].getAttribute("href");
 
         if (!href) {
             return null;
@@ -1244,62 +1120,50 @@ async function getGameIcon(url) {
             baseURL
         ).href;
 
-    } catch {
+    } catch (error) {
 
         return null;
     }
 }
 
 
-/* =========================
-   FILENAME
-========================= */
-
 function cleanFilename(name) {
 
     return name
         .replace(/\\.html?$/i, "")
         .replace(/[-_]+/g, " ")
-        .replace(/\\b\\w/g, c =>
-            c.toUpperCase()
-        );
+        .replace(/\\b\\w/g, function(char) {
+            return char.toUpperCase();
+        });
 }
 
-
-/* =========================
-   START
-========================= */
 
 loadPlayMore();
+`;
 
-</script>
+    code += "<\/script>\n";
+    code += "</body>\n";
+    code += "</html>";
 
-</body>
-</html>`;
+    return code;
 }
 
 
-/* =========================
+/* =========================================
    COPY
-========================= */
+========================================= */
 
 async function copyCode() {
 
     const code =
-        document.getElementById(
-            "generatedCode"
-        ).value;
-
-    const status =
-        document.getElementById("status");
+        generatedCode.value;
 
     if (!code.trim()) {
 
-        status.textContent =
-            "Generate the page first.";
-
-        status.className =
-            "status error";
+        showStatus(
+            "Generate a page first.",
+            "error"
+        );
 
         return;
     }
@@ -1308,63 +1172,62 @@ async function copyCode() {
 
         await navigator.clipboard.writeText(code);
 
-        status.textContent =
-            "Generated code copied to clipboard.";
-
-        status.className =
-            "status success";
-
     } catch {
 
-        /*
-           Clipboard fallback
-        */
-
-        const textarea =
-            document.getElementById(
-                "generatedCode"
-            );
-
-        textarea.select();
+        generatedCode.focus();
+        generatedCode.select();
 
         document.execCommand("copy");
-
-        status.textContent =
-            "Generated code copied.";
-
-        status.className =
-            "status success";
     }
+
+    showStatus(
+        "Generated code copied to clipboard!",
+        "success"
+    );
 }
 
 
-/* =========================
+/* =========================================
    CLEAR
-========================= */
+========================================= */
 
 function clearMaker() {
 
-    document.getElementById(
-        "ugsInput"
-    ).value = "";
+    ugsInput.value = "";
+    gameNameInput.value = "";
+    generatedCode.value = "";
 
-    document.getElementById(
-        "gameName"
-    ).value = "";
+    preview.src =
+        "about:blank";
 
-    document.getElementById(
-        "generatedCode"
-    ).value = "";
-
-    document.getElementById(
-        "preview"
-    ).src = "about:blank";
-
-    document.getElementById(
-        "status"
-    ).textContent = "";
-
+    showStatus("", "");
 }
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+document
+    .getElementById("generateButton")
+    .addEventListener(
+        "click",
+        generatePage
+    );
+
+document
+    .getElementById("copyButton")
+    .addEventListener(
+        "click",
+        copyCode
+    );
+
+document
+    .getElementById("clearButton")
+    .addEventListener(
+        "click",
+        clearMaker
+    );
 
 </script>
 
