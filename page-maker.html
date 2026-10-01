@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eternal Arcade — Page Maker</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #f5f0ff;
+    font-family: Arial, sans-serif;
+    background:
+        radial-gradient(circle at 50% -10%, rgba(125,45,220,.28), transparent 40%),
+        #050308;
+}
+
+/* PARTICLES */
+
+#particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #9b4dff;
+    box-shadow: 0 0 10px #9b4dff;
+    opacity: .55;
+    animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    from {
+        transform: translateY(110vh);
+    }
+    to {
+        transform: translateY(-20vh);
+    }
+}
+
+/* HEADER */
+
+header {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 55px 20px 30px;
+}
+
+.moon {
+    width: 62px;
+    height: 62px;
+    margin: auto;
+    border-radius: 50%;
+    background: #a855f7;
+    box-shadow:
+        0 0 25px rgba(168,85,247,.75),
+        0 0 70px rgba(126,34,206,.35);
+    position: relative;
+}
+
+.moon::after {
+    content: "";
+    position: absolute;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #050308;
+    left: 20px;
+    top: -9px;
+}
+
+h1 {
+    margin: 22px 0 8px;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: #a99bb8;
+    margin: 0;
+}
+
+/* MAIN */
+
+.container {
+    width: min(1150px, calc(100% - 30px));
+    margin: auto;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 80px;
+}
+
+/* GLASS */
+
+.glass {
+    background: rgba(16, 10, 23, .68);
+    border: 1px solid rgba(155, 77, 255, .28);
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.4),
+        inset 0 1px rgba(255,255,255,.05),
+        0 0 30px rgba(112, 35, 180, .08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 22px;
+}
+
+.panel {
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.panel-title {
+    margin: 0 0 15px;
+    font-size: 20px;
+}
+
+.panel-description {
+    color: #93889f;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* INPUTS */
+
+input,
+textarea {
+    width: 100%;
+    color: #f5f0ff;
+    background: rgba(5, 3, 8, .72);
+    border: 1px solid rgba(155, 77, 255, .25);
+    outline: none;
+    border-radius: 15px;
+    transition: .2s;
+    font-family: monospace;
+}
+
+input {
+    padding: 14px 16px;
+    margin-bottom: 14px;
+}
+
+textarea {
+    min-height: 330px;
+    padding: 16px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #9b4dff;
+    box-shadow: 0 0 20px rgba(155,77,255,.18);
+}
+
+/* BUTTONS */
+
+button {
+    border: 1px solid rgba(174,108,255,.35);
+    color: white;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(155,77,255,.35),
+            rgba(103,33,198,.16)
+        );
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s;
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.07),
+        0 5px 20px rgba(0,0,0,.25);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(190,130,255,.75);
+    box-shadow:
+        0 0 25px rgba(155,77,255,.25),
+        inset 0 1px rgba(255,255,255,.1);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* PREVIEW */
+
+.preview-wrapper {
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid rgba(155,77,255,.22);
+    background: #050308;
+}
+
+.preview-header {
+    padding: 13px 16px;
+    background: rgba(20,12,28,.8);
+    color: #a99bb8;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(155,77,255,.15);
+}
+
+#preview {
+    width: 100%;
+    height: 700px;
+    border: 0;
+    display: block;
+    background: #050308;
+}
+
+/* CODE */
+
+.code-box {
+    position: relative;
+}
+
+#generatedCode {
+    min-height: 450px;
+}
+
+.copy-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* STATUS */
+
+.status {
+    margin-top: 12px;
+    min-height: 20px;
+    color: #a99bb8;
+    font-size: 13px;
+}
+
+.status.success {
+    color: #b889ff;
+}
+
+.status.error {
+    color: #ff7bce;
+}
+
+/* SMALL SCREEN */
+
+@media (max-width: 700px) {
+    header {
+        padding-top: 35px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    #preview {
+        height: 550px;
+    }
+
+    textarea {
+        min-height: 260px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="particles"></div>
+
+<header>
+    <div class="moon"></div>
+    <h1>Eternal Arcade</h1>
+    <p class="subtitle">Game Page Maker</p>
+</header>
+
+<main class="container">
+
+    <!-- UGS INPUT -->
+
+    <section class="glass panel">
+
+        <h2 class="panel-title">UGS HTML</h2>
+
+        <div class="panel-description">
+            Paste the complete Ultimate Game Stash HTML below.
+        </div>
+
+        <input
+            id="gameName"
+            type="text"
+            placeholder="Game filename, example: ddlc.html"
+        >
+
+        <textarea
+            id="ugsInput"
+            spellcheck="false"
+            placeholder="Paste your UGS HTML here..."
+        ></textarea>
+
+        <div class="button-row">
+            <button onclick="generatePage()">
+                ✨ Generate Page
+            </button>
+
+            <button onclick="clearMaker()">
+                Clear
+            </button>
+        </div>
+
+        <div id="status" class="status"></div>
+
+    </section>
+
+
+    <!-- PREVIEW -->
+
+    <section class="glass panel">
+
+        <h2 class="panel-title">Live Preview</h2>
+
+        <div class="preview-wrapper">
+
+            <div class="preview-header">
+                Eternal Arcade Game Page
+            </div>
+
+            <iframe
+                id="preview"
+                title="Game page preview"
+            ></iframe>
+
+        </div>
+
+    </section>
+
+
+    <!-- GENERATED CODE -->
+
+    <section class="glass panel">
+
+        <h2 class="panel-title">Generated Page Code</h2>
+
+        <div class="panel-description">
+            Copy this code into a new HTML file inside your
+            <b>/play/</b> folder.
+        </div>
+
+        <div class="code-box">
+
+            <textarea
+                id="generatedCode"
+                spellcheck="false"
+                placeholder="Generated HTML will appear here..."
+            ></textarea>
+
+        </div>
+
+        <div class="copy-row">
+
+            <button onclick="copyCode()">
+                📋 Copy Code
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+/* =========================
+   PARTICLES
+========================= */
+
+const particleContainer = document.getElementById("particles");
+
+for (let i = 0; i < 70; i++) {
+
+    const particle = document.createElement("div");
+
+    particle.className = "particle";
+
+    particle.style.left = Math.random() * 100 + "%";
+    particle.style.animationDuration =
+        (8 + Math.random() * 18) + "s";
+
+    particle.style.animationDelay =
+        (-Math.random() * 20) + "s";
+
+    particle.style.opacity =
+        (.15 + Math.random() * .65);
+
+    particleContainer.appendChild(particle);
+}
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+const AD_URL =
+    "https://games4fun.org/ads/banner.html";
+
+const GITHUB_API =
+    "https://api.github.com/repos/voidware1/Eternal-Arcade/contents/play?ref=main";
+
+
+/* =========================
+   GENERATE
+========================= */
+
+function generatePage() {
+
+    const ugsHTML =
+        document.getElementById("ugsInput").value.trim();
+
+    const gameName =
+        document.getElementById("gameName").value.trim();
+
+    const status =
+        document.getElementById("status");
+
+    if (!ugsHTML) {
+
+        status.textContent =
+            "Paste your UGS HTML first.";
+
+        status.className =
+            "status error";
+
+        return;
+    }
+
+    /*
+       Convert the complete UGS HTML into Base64.
+
+       This lets the generated page contain
+       the pasted game directly.
+    */
+
+    const encodedGame =
+        encodeBase64Unicode(ugsHTML);
+
+    const safeName =
+        gameName ||
+        "game.html";
+
+    const generated =
+        createGamePage(encodedGame, safeName);
+
+    document.getElementById("generatedCode").value =
+        generated;
+
+    /*
+       Preview using a Blob URL.
+    */
+
+    const blob =
+        new Blob(
+            [generated],
+            { type: "text/html" }
+        );
+
+    const previewURL =
+        URL.createObjectURL(blob);
+
+    document.getElementById("preview").src =
+        previewURL;
+
+    status.textContent =
+        "Page generated successfully.";
+
+    status.className =
+        "status success";
+}
+
+
+/* =========================
+   BASE64
+========================= */
+
+function encodeBase64Unicode(text) {
+
+    const bytes =
+        new TextEncoder().encode(text);
+
+    let binary = "";
+
+    const chunkSize = 0x8000;
+
+    for (
+        let i = 0;
+        i < bytes.length;
+        i += chunkSize
+    ) {
+
+        binary += String.fromCharCode(
+            ...bytes.subarray(
+                i,
+                i + chunkSize
+            )
+        );
+    }
+
+    return btoa(binary);
+}
+
+
+/* =========================
+   GENERATED PAGE
+========================= */
+
+function createGamePage(
+    encodedGame,
+    currentGame
+) {
+
+return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Eternal Arcade</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #f5f0ff;
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(125,45,220,.28),
+            transparent 40%
+        ),
+        #050308;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(
+            circle,
+            rgba(155,77,255,.65) 1px,
+            transparent 2px
+        );
+    background-size: 80px 80px;
+    opacity: .12;
+}
+
+.container {
+    width: min(1200px, calc(100% - 24px));
+    margin: auto;
+    padding-bottom: 50px;
+}
+
+.glass {
+    background: rgba(16,10,23,.68);
+    border: 1px solid rgba(155,77,255,.28);
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.45),
+        inset 0 1px rgba(255,255,255,.05),
+        0 0 35px rgba(112,35,180,.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+}
+
+.ad {
+    margin: 12px 0;
+
+    overflow: hidden;
+
+    min-height: 90px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ad iframe {
+    width: 100%;
+    height: 90px;
+    border: 0;
+}
+
+.game-panel {
+    padding: 10px;
+}
+
+.game-frame {
+    width: 100%;
+    height: 75vh;
+    min-height: 500px;
+
+    display: block;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: #000;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 4px 4px;
+}
+
+button {
+    border: 1px solid rgba(174,108,255,.35);
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(155,77,255,.35),
+            rgba(103,33,198,.16)
+        );
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    padding: 12px 18px;
+
+    border-radius: 13px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(190,130,255,.75);
+
+    box-shadow:
+        0 0 25px rgba(155,77,255,.25);
+}
+
+.section-title {
+    margin:
+        32px 4px 15px;
+
+    font-size: 25px;
+}
+
+.play-more {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(145px, 1fr)
+        );
+
+    gap: 15px;
+}
+
+.game-card {
+    position: relative;
+
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+
+    border-radius: 17px;
+
+    border:
+        1px solid rgba(155,77,255,.25);
+
+    background:
+        rgba(16,10,23,.72);
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    color: white;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.25);
+
+    transition: .25s;
+}
+
+.game-card:hover {
+    transform:
+        translateY(-5px)
+        scale(1.02);
+
+    border-color:
+        rgba(170,100,255,.75);
+
+    box-shadow:
+        0 10px 35px rgba(155,77,255,.2);
+}
+
+.game-card img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: .25s;
+}
+
+.game-card:hover img {
+    opacity: .08;
+    transform: scale(1.08);
+}
+
+.game-card-title {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 15px;
+
+    font-weight: bold;
+    font-size: 17px;
+
+    opacity: 0;
+
+    transition: .25s;
+}
+
+.game-card:hover
+.game-card-title {
+    opacity: 1;
+}
+
+.fallback-icon {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 45px;
+
+    color: #9b4dff;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(155,77,255,.18),
+            transparent 65%
+        );
+}
+
+.loading {
+    color: #93889f;
+    padding: 20px 4px;
+}
+
+@media (max-width: 700px) {
+
+    .game-frame {
+        height: 65vh;
+        min-height: 400px;
+    }
+
+    .ad iframe {
+        height: 70px;
+    }
+
+    .play-more {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- AD -->
+
+    <div class="glass ad">
+
+        <iframe
+            src="${AD_URL}"
+            title="Advertisement"
+            loading="lazy"
+            scrolling="no">
+        </iframe>
+
+    </div>
+
+
+    <!-- GAME -->
+
+    <div class="glass game-panel">
+
+        <iframe
+            id="gameFrame"
+            class="game-frame"
+            title="Game">
+        </iframe>
+
+        <div class="controls">
+
+            <button onclick="fullscreenGame()">
+                ⛶ Fullscreen
+            </button>
+
+            <button onclick="openAboutBlank()">
+                ↗ Open About:Blank
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- PLAY MORE -->
+
+    <h2 class="section-title">
+        🎮 Play More
+    </h2>
+
+    <div
+        id="playMore"
+        class="play-more">
+        <div class="loading">
+            Loading games...
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   GAME DATA
+========================= */
+
+const GAME_DATA =
+    "${encodedGame}";
+
+const CURRENT_GAME =
+    ${JSON.stringify(currentGame)};
+
+
+/* =========================
+   LOAD GAME
+========================= */
+
+function decodeGame() {
+
+    const binary =
+        atob(GAME_DATA);
+
+    const bytes =
+        Uint8Array.from(
+            binary,
+            char => char.charCodeAt(0)
+        );
+
+    return new TextDecoder()
+        .decode(bytes);
+}
+
+const gameHTML =
+    decodeGame();
+
+const gameBlob =
+    new Blob(
+        [gameHTML],
+        { type: "text/html" }
+    );
+
+const gameURL =
+    URL.createObjectURL(gameBlob);
+
+document.getElementById("gameFrame").src =
+    gameURL;
+
+
+/* =========================
+   FULLSCREEN
+========================= */
+
+function fullscreenGame() {
+
+    const frame =
+        document.getElementById("gameFrame");
+
+    if (frame.requestFullscreen) {
+
+        frame.requestFullscreen();
+
+    } else if (frame.webkitRequestFullscreen) {
+
+        frame.webkitRequestFullscreen();
+
+    }
+}
+
+
+/* =========================
+   ABOUT BLANK
+========================= */
+
+function openAboutBlank() {
+
+    const win =
+        window.open(
+            "about:blank",
+            "_blank"
+        );
+
+    if (!win) {
+
+        alert(
+            "Your browser blocked the new tab. Allow pop-ups for this site."
+        );
+
+        return;
+    }
+
+    win.document.open();
+
+    win.document.write(
+        gameHTML
+    );
+
+    win.document.close();
+
+}
+
+
+/* =========================
+   PLAY MORE
+========================= */
+
+const API =
+    "https://api.github.com/repos/voidware1/Eternal-Arcade/contents/play?ref=main";
+
+async function loadPlayMore() {
+
+    const container =
+        document.getElementById("playMore");
+
+    try {
+
+        const response =
+            await fetch(API);
+
+        if (!response.ok) {
+            throw new Error(
+                "GitHub API returned " +
+                response.status
+            );
+        }
+
+        const files =
+            await response.json();
+
+        const games =
+            files.filter(file =>
+
+                file.type === "file" &&
+
+                file.name.toLowerCase()
+                    .endsWith(".html") &&
+
+                file.name !== "index.html" &&
+
+                file.name !== CURRENT_GAME
+
+            );
+
+        if (!games.length) {
+
+            container.innerHTML =
+                '<div class="loading">No other games found.</div>';
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        /*
+           Limit the Play More section so huge
+           libraries don't overload the page.
+        */
+
+        const selected =
+            games.slice(0, 24);
+
+        for (const file of selected) {
+
+            const card =
+                document.createElement("a");
+
+            card.className =
+                "game-card";
+
+            card.href =
+                "play/" +
+                encodeURIComponent(file.name);
+
+            const icon =
+                await getGameIcon(
+                    file.download_url
+                );
+
+            if (icon) {
+
+                const img =
+                    document.createElement("img");
+
+                img.src = icon;
+                img.alt = "";
+
+                card.appendChild(img);
+
+            } else {
+
+                const fallback =
+                    document.createElement("div");
+
+                fallback.className =
+                    "fallback-icon";
+
+                fallback.textContent =
+                    "🎮";
+
+                card.appendChild(fallback);
+            }
+
+            const title =
+                document.createElement("div");
+
+            title.className =
+                "game-card-title";
+
+            title.textContent =
+                cleanFilename(file.name);
+
+            /*
+               Try to get the real UGS title.
+            */
+
+            try {
+
+                const html =
+                    await fetch(
+                        file.download_url
+                    ).then(r => r.text());
+
+                const doc =
+                    new DOMParser()
+                        .parseFromString(
+                            html,
+                            "text/html"
+                        );
+
+                if (
+                    doc.title &&
+                    doc.title.trim()
+                ) {
+
+                    title.textContent =
+                        doc.title.trim();
+
+                }
+
+            } catch {}
+
+            card.appendChild(title);
+
+            container.appendChild(card);
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            '<div class="loading">Unable to load games right now.</div>';
+    }
+}
+
+
+/* =========================
+   ICON DETECTION
+========================= */
+
+async function getGameIcon(url) {
+
+    try {
+
+        const response =
+            await fetch(url);
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const html =
+            await response.text();
+
+        const doc =
+            new DOMParser()
+                .parseFromString(
+                    html,
+                    "text/html"
+                );
+
+        const base =
+            doc.querySelector("base");
+
+        const baseURL =
+            base && base.href
+                ? new URL(
+                    base.href,
+                    url
+                  ).href
+                : url;
+
+        const icons =
+            Array.from(
+                doc.querySelectorAll(
+                    'link[rel~="icon"]'
+                )
+            );
+
+        if (!icons.length) {
+            return null;
+        }
+
+        /*
+           Prefer the largest icon.
+        */
+
+        icons.sort((a, b) => {
+
+            const getSize = el => {
+
+                const sizes =
+                    el.getAttribute("sizes") || "";
+
+                const match =
+                    sizes.match(
+                        /(\\d+)x(\\d+)/
+                    );
+
+                if (!match) {
+                    return 0;
+                }
+
+                return (
+                    Number(match[1]) *
+                    Number(match[2])
+                );
+            };
+
+            return getSize(b) - getSize(a);
+        });
+
+        const href =
+            icons[0]
+                .getAttribute("href");
+
+        if (!href) {
+            return null;
+        }
+
+        return new URL(
+            href,
+            baseURL
+        ).href;
+
+    } catch {
+
+        return null;
+    }
+}
+
+
+/* =========================
+   FILENAME
+========================= */
+
+function cleanFilename(name) {
+
+    return name
+        .replace(/\\.html?$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\\b\\w/g, c =>
+            c.toUpperCase()
+        );
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadPlayMore();
+
+</script>
+
+</body>
+</html>`;
+}
+
+
+/* =========================
+   COPY
+========================= */
+
+async function copyCode() {
+
+    const code =
+        document.getElementById(
+            "generatedCode"
+        ).value;
+
+    const status =
+        document.getElementById("status");
+
+    if (!code.trim()) {
+
+        status.textContent =
+            "Generate the page first.";
+
+        status.className =
+            "status error";
+
+        return;
+    }
+
+    try {
+
+        await navigator.clipboard.writeText(code);
+
+        status.textContent =
+            "Generated code copied to clipboard.";
+
+        status.className =
+            "status success";
+
+    } catch {
+
+        /*
+           Clipboard fallback
+        */
+
+        const textarea =
+            document.getElementById(
+                "generatedCode"
+            );
+
+        textarea.select();
+
+        document.execCommand("copy");
+
+        status.textContent =
+            "Generated code copied.";
+
+        status.className =
+            "status success";
+    }
+}
+
+
+/* =========================
+   CLEAR
+========================= */
+
+function clearMaker() {
+
+    document.getElementById(
+        "ugsInput"
+    ).value = "";
+
+    document.getElementById(
+        "gameName"
+    ).value = "";
+
+    document.getElementById(
+        "generatedCode"
+    ).value = "";
+
+    document.getElementById(
+        "preview"
+    ).src = "about:blank";
+
+    document.getElementById(
+        "status"
+    ).textContent = "";
+
+}
+
+</script>
+
+</body>
+</html>

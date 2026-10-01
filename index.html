@@ -1,1 +1,1363 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Eternal Arcade</title> <style> * { margin: 0; padding: 0; box-sizing: border-box; } body { min-height: 100vh; overflow: hidden; background: #000; color: white; font-family: Arial, sans-serif; } /* ========================= PARTICLES ========================= */ #particles { position: fixed; inset: 0; overflow: hidden; pointer-events: none; } .particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #a855f7; box-shadow: 0 0 8px #a855f7, 0 0 16px #7c3aed; opacity: 0; animation: floatUp linear infinite; } @keyframes floatUp { 0% { transform: translateY(110vh); opacity: 0; } 15% { opacity: .8; } 80% { opacity: .6; } 100% { transform: translateY(-10vh); opacity: 0; } } /* ========================= MAIN ========================= */ .container { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-top: 90px; } /* ========================= MOON ========================= */ .moon { position: relative; width: 95px; height: 95px; border-radius: 50%; background: #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, .8), 0 0 60px rgba(124, 58, 237, .55), 0 0 110px rgba(124, 58, 237, .25); margin-bottom: 25px; overflow: hidden; } /* Crescent cutout */ .moon::after { content: ""; position: absolute; width: 95px; height: 95px; border-radius: 50%; background: #000; left: 30px; top: -13px; } /* ========================= TITLE ========================= */ .title { font-size: 42px; font-weight: 700; letter-spacing: -1.5px; text-align: center; margin-bottom: 32px; text-shadow: 0 0 15px rgba(168, 85, 247, .35); } /* ========================= LIQUID SEARCH ========================= */ .search { position: relative; width: min(600px, 85vw); height: 58px; border-radius: 22px; display: flex; align-items: center; padding: 0 20px; background: linear-gradient( 135deg, rgba(255,255,255,.08), rgba(168,85,247,.06) ); border: 1px solid rgba(255,255,255,.13); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: inset 0 1px 1px rgba(255,255,255,.12), 0 10px 40px rgba(0,0,0,.5); transition: .25s; } /* Glass reflection */ .search::before { content: ""; position: absolute; left: 12%; right: 12%; top: 1px; height: 1px; background: linear-gradient( 90deg, transparent, rgba(255,255,255,.3), transparent ); } /* Purple glow */ .search:focus-within { border-color: rgba(168,85,247,.5); box-shadow: inset 0 1px 1px rgba(255,255,255,.12), 0 0 30px rgba(168,85,247,.15), 0 10px 40px rgba(0,0,0,.5); } /* Search icon */ .search-icon { font-size: 19px; color: #a855f7; margin-right: 12px; } /* Input */ .search input { width: 100%; border: none; outline: none; background: transparent; color: white; font-size: 15px; } .search input::placeholder { color: rgba(255,255,255,.42); } /* ========================= MOBILE ========================= */ @media(max-width: 600px) { .container { padding-top: 70px; } .moon { width: 80px; height: 80px; } .moon::after { width: 80px; height: 80px; } .title { font-size: 34px; } } </style> </head> <body> <!-- PARTICLES --> <div id="particles"></div> <!-- MAIN --> <div class="container"> <!-- PURPLE MOON --> <div class="moon"></div> <!-- TITLE --> <h1 class="title"> Eternal Arcade </h1> <!-- SEARCH --> <div class="search"> <span class="search-icon"> ⌕ </span> <input type="text" placeholder="Search games..." autocomplete="off" > </div> </div> <script> /* ========================= PARTICLES ========================= */ const particles = document.getElementById("particles"); for (let i = 0; i < 70; i++) { const particle = document.createElement("div"); particle.className = "particle"; particle.style.left = Math.random() * 100 + "vw"; particle.style.animationDuration = (8 + Math.random() * 15) + "s"; particle.style.animationDelay = (-Math.random() * 20) + "s"; const size = 1 + Math.random() * 3; particle.style.width = size + "px"; particle.style.height = size + "px"; particles.appendChild(particle); } </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Eternal Arcade</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #000;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* =========================
+   PARTICLES
+========================= */
+
+#particles {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #a855f7;
+
+    box-shadow:
+        0 0 8px #a855f7,
+        0 0 16px #7c3aed;
+
+    opacity: 0;
+
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+
+    0% {
+        transform: translateY(110vh);
+        opacity: 0;
+    }
+
+    15% {
+        opacity: .8;
+    }
+
+    80% {
+        opacity: .6;
+    }
+
+    100% {
+        transform: translateY(-10vh);
+        opacity: 0;
+    }
+
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.container {
+    position: relative;
+    z-index: 2;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 90px;
+    padding-bottom: 100px;
+}
+
+/* =========================
+   MOON
+========================= */
+
+.moon {
+    position: relative;
+
+    width: 95px;
+    height: 95px;
+
+    border-radius: 50%;
+
+    background: #a855f7;
+
+    box-shadow:
+        0 0 20px rgba(168, 85, 247, .8),
+        0 0 60px rgba(124, 58, 237, .55),
+        0 0 110px rgba(124, 58, 237, .25);
+
+    margin-bottom: 25px;
+
+    overflow: hidden;
+}
+
+/* Crescent cutout */
+
+.moon::after {
+    content: "";
+
+    position: absolute;
+
+    width: 95px;
+    height: 95px;
+
+    border-radius: 50%;
+
+    background: #000;
+
+    left: 30px;
+    top: -13px;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.title {
+    font-size: 42px;
+    font-weight: 700;
+
+    letter-spacing: -1.5px;
+
+    text-align: center;
+
+    margin-bottom: 32px;
+
+    text-shadow:
+        0 0 15px rgba(168, 85, 247, .35);
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search {
+    position: relative;
+
+    width: min(600px, 85vw);
+    height: 58px;
+
+    border-radius: 22px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.08),
+            rgba(168,85,247,.06)
+        );
+
+    border: 1px solid rgba(255,255,255,.13);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.12),
+        0 10px 40px rgba(0,0,0,.5);
+
+    transition: .25s;
+
+    z-index: 5;
+}
+
+.search::before {
+    content: "";
+
+    position: absolute;
+
+    left: 12%;
+    right: 12%;
+    top: 1px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.3),
+            transparent
+        );
+}
+
+.search:focus-within {
+
+    border-color:
+        rgba(168,85,247,.5);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.12),
+        0 0 30px rgba(168,85,247,.15),
+        0 10px 40px rgba(0,0,0,.5);
+}
+
+.search-icon {
+    font-size: 19px;
+
+    color: #a855f7;
+
+    margin-right: 12px;
+}
+
+.search input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 15px;
+}
+
+.search input::placeholder {
+    color: rgba(255,255,255,.42);
+}
+
+/* =========================
+   PLAY SECTION
+========================= */
+
+.play-section {
+
+    width: min(1200px, 92vw);
+
+    margin-top: 55px;
+}
+
+.section-title {
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+    margin-bottom: 22px;
+
+    letter-spacing: -.5px;
+}
+
+/* =========================
+   GAME GRID
+========================= */
+
+.game-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(150px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+/* =========================
+   GAME CARD
+========================= */
+
+.game-card {
+
+    position: relative;
+
+    aspect-ratio: 1 / 1;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    text-decoration: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.12),
+            rgba(255,255,255,.04)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.45);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+
+    cursor: pointer;
+}
+
+.game-card:hover {
+
+    transform:
+        translateY(-6px)
+        scale(1.025);
+
+    border-color:
+        rgba(168,85,247,.55);
+
+    box-shadow:
+        0 15px 45px rgba(124,58,237,.25);
+}
+
+/* =========================
+   GAME ICON
+========================= */
+
+.game-icon {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        opacity .3s ease,
+        transform .35s ease,
+        filter .3s ease;
+}
+
+.game-card:hover .game-icon {
+
+    opacity: .08;
+
+    transform: scale(1.08);
+
+    filter:
+        blur(2px)
+        brightness(.5);
+}
+
+/* =========================
+   GAME TITLE OVERLAY
+========================= */
+
+.game-name {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    text-shadow:
+        0 0 12px rgba(168,85,247,.8),
+        0 2px 8px #000;
+
+    opacity: 0;
+
+    transform:
+        translateY(8px);
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+    pointer-events: none;
+}
+
+.game-card:hover .game-name {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading {
+
+    width: 100%;
+
+    text-align: center;
+
+    padding: 50px 20px;
+
+    color: rgba(255,255,255,.45);
+
+    font-size: 15px;
+}
+
+.loading::after {
+
+    content: "";
+
+    display: block;
+
+    width: 24px;
+    height: 24px;
+
+    margin: 18px auto 0;
+
+    border-radius: 50%;
+
+    border:
+        2px solid rgba(255,255,255,.12);
+
+    border-top-color:
+        #a855f7;
+
+    animation:
+        spin .8s linear infinite;
+}
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty {
+
+    width: 100%;
+
+    text-align: center;
+
+    padding: 50px 20px;
+
+    color:
+        rgba(255,255,255,.4);
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error {
+
+    width: 100%;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(168,85,247,.06);
+
+    border:
+        1px solid rgba(168,85,247,.15);
+
+    color:
+        rgba(255,255,255,.55);
+
+    text-align: center;
+
+    line-height: 1.6;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width: 600px) {
+
+    .container {
+        padding-top: 70px;
+    }
+
+    .moon {
+        width: 80px;
+        height: 80px;
+    }
+
+    .moon::after {
+        width: 80px;
+        height: 80px;
+    }
+
+    .title {
+        font-size: 34px;
+    }
+
+    .play-section {
+        margin-top: 45px;
+    }
+
+    .game-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 12px;
+    }
+
+    .game-name {
+        font-size: 16px;
+    }
+}
+
+@media(min-width: 601px) and (max-width: 900px) {
+
+    .game-grid {
+
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     PARTICLES
+========================= -->
+
+<div id="particles"></div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="container">
+
+    <!-- MOON -->
+
+    <div class="moon"></div>
+
+
+    <!-- TITLE -->
+
+    <h1 class="title">
+        Eternal Arcade
+    </h1>
+
+
+    <!-- SEARCH -->
+
+    <div class="search">
+
+        <span class="search-icon">
+            ⌕
+        </span>
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search..."
+            autocomplete="off"
+        >
+
+    </div>
+
+
+    <!-- =========================
+         PLAY LIBRARY
+    ========================= -->
+
+    <section class="play-section">
+
+        <h2 class="section-title">
+            Play
+        </h2>
+
+        <div
+            id="gameGrid"
+            class="game-grid"
+        >
+
+            <div class="loading">
+                Loading play...
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ETERNAL ARCADE
+   AUTOMATIC PLAY LIBRARY
+========================================================= */
+
+
+/* =========================================================
+   GITHUB SETTINGS
+========================================================= */
+
+const GITHUB_OWNER = "voidware1";
+
+const GITHUB_REPO = "Eternal-Arcade";
+
+const GITHUB_BRANCH = "main";
+
+const PLAY_FOLDER = "play";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const gameGrid =
+    document.getElementById("gameGrid");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+
+/* =========================================================
+   GAME STORAGE
+========================================================= */
+
+let games = [];
+
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+const particles =
+    document.getElementById("particles");
+
+for (let i = 0; i < 70; i++) {
+
+    const particle =
+        document.createElement("div");
+
+    particle.className =
+        "particle";
+
+    particle.style.left =
+        Math.random() * 100 + "vw";
+
+    particle.style.animationDuration =
+        (8 + Math.random() * 15) + "s";
+
+    particle.style.animationDelay =
+        (-Math.random() * 20) + "s";
+
+    const size =
+        1 + Math.random() * 3;
+
+    particle.style.width =
+        size + "px";
+
+    particle.style.height =
+        size + "px";
+
+    particles.appendChild(particle);
+}
+
+
+/* =========================================================
+   CLEAN GAME NAME
+========================================================= */
+
+function cleanFileName(name) {
+
+    return name
+        .replace(/\.html$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, char =>
+            char.toUpperCase()
+        );
+
+}
+
+
+/* =========================================================
+   FIND GAME ICON
+========================================================= */
+
+function findGameIcon(doc, gameUrl) {
+
+    /*
+        UGS normally contains:
+
+        <base href="...">
+
+        <link
+            rel="icon"
+            href="icons/icon-512x512.png"
+        >
+    */
+
+    const baseElement =
+        doc.querySelector(
+            "base[href]"
+        );
+
+
+    let baseUrl =
+        gameUrl;
+
+
+    if (baseElement) {
+
+        try {
+
+            baseUrl =
+                new URL(
+                    baseElement.getAttribute("href"),
+                    gameUrl
+                ).href;
+
+        } catch (error) {
+
+            console.warn(
+                "Invalid base URL:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       Collect possible icons
+    ----------------------------------------- */
+
+    const iconLinks =
+        Array.from(
+            doc.querySelectorAll(
+                "link[href]"
+            )
+        ).filter(link => {
+
+            const rel =
+                (
+                    link.getAttribute("rel")
+                    || ""
+                ).toLowerCase();
+
+            return (
+                rel.includes("icon") ||
+                rel.includes("apple-touch-icon")
+            );
+
+        });
+
+
+    if (iconLinks.length) {
+
+        /*
+            Prefer the largest icon.
+        */
+
+        iconLinks.sort((a, b) => {
+
+            function getSize(link) {
+
+                const sizes =
+                    link.getAttribute("sizes");
+
+                if (!sizes) return 0;
+
+                const match =
+                    sizes.match(
+                        /(\d+)\s*x\s*(\d+)/i
+                    );
+
+                if (!match) return 0;
+
+                return (
+                    parseInt(match[1]) *
+                    parseInt(match[2])
+                );
+
+            }
+
+            return (
+                getSize(b) -
+                getSize(a)
+            );
+
+        });
+
+
+        const href =
+            iconLinks[0]
+                .getAttribute("href");
+
+
+        try {
+
+            return new URL(
+                href,
+                baseUrl
+            ).href;
+
+        } catch (error) {
+
+            console.warn(
+                "Could not resolve icon:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       Try Open Graph image
+    ----------------------------------------- */
+
+    const ogImage =
+        doc.querySelector(
+            'meta[property="og:image"]'
+        );
+
+
+    if (ogImage) {
+
+        const content =
+            ogImage.getAttribute("content");
+
+        if (content) {
+
+            try {
+
+                return new URL(
+                    content,
+                    baseUrl
+                ).href;
+
+            } catch (error) {}
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       Fallback
+    ----------------------------------------- */
+
+    return createFallbackIcon();
+
+}
+
+
+/* =========================================================
+   FALLBACK ICON
+========================================================= */
+
+function createFallbackIcon() {
+
+    const svg = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+        >
+
+            <rect
+                width="512"
+                height="512"
+                rx="80"
+                fill="#12051f"
+            />
+
+            <circle
+                cx="256"
+                cy="256"
+                r="170"
+                fill="#a855f7"
+                opacity=".15"
+            />
+
+            <path
+                d="
+                    M160 300
+                    C130 300 110 275 120 245
+                    L135 200
+                    C145 170 175 150 205 160
+                    L256 180
+                    L307 160
+                    C337 150 367 170 377 200
+                    L392 245
+                    C402 275 382 300 352 300
+                    C330 300 315 286 300 270
+                    L280 250
+                    H232
+                    L212 270
+                    C197 286 182 300 160 300Z
+                "
+                fill="#a855f7"
+            />
+
+            <circle
+                cx="210"
+                cy="225"
+                r="10"
+                fill="#000"
+            />
+
+            <circle
+                cx="302"
+                cy="225"
+                r="10"
+                fill="#000"
+            />
+
+            <circle
+                cx="335"
+                cy="210"
+                r="8"
+                fill="#000"
+            />
+
+            <circle
+                cx="335"
+                cy="240"
+                r="8"
+                fill="#000"
+            />
+
+        </svg>
+    `;
+
+
+    return (
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg)
+    );
+
+}
+
+
+/* =========================================================
+   GET GAME HTML
+========================================================= */
+
+async function getGameInfo(file) {
+
+    const gameUrl =
+        "play/" +
+        encodeURIComponent(file.name);
+
+
+    let title =
+        cleanFileName(file.name);
+
+
+    let icon =
+        createFallbackIcon();
+
+
+    try {
+
+        /*
+            GitHub gives us a download URL
+            for every file.
+
+            We fetch the UGS HTML and inspect
+            its <head>.
+        */
+
+        const response =
+            await fetch(
+                file.download_url
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not fetch game HTML"
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        const parser =
+            new DOMParser();
+
+
+        const doc =
+            parser.parseFromString(
+                html,
+                "text/html"
+            );
+
+
+        /* -----------------------------------------
+           Get title
+        ----------------------------------------- */
+
+        if (doc.title) {
+
+            const pageTitle =
+                doc.title.trim();
+
+            if (
+                pageTitle &&
+                pageTitle.toLowerCase() !==
+                "game"
+            ) {
+
+                title =
+                    pageTitle;
+
+            }
+
+        }
+
+
+        /* -----------------------------------------
+           Get UGS icon
+        ----------------------------------------- */
+
+        icon =
+            findGameIcon(
+                doc,
+                file.download_url
+            );
+
+
+    } catch (error) {
+
+        console.warn(
+            "Could not inspect:",
+            file.name,
+            error
+        );
+
+    }
+
+
+    return {
+
+        name: title,
+
+        fileName: file.name,
+
+        url: gameUrl,
+
+        icon: icon
+
+    };
+
+}
+
+
+/* =========================================================
+   LOAD PLAY LIBRARY
+========================================================= */
+
+async function loadGames() {
+
+    gameGrid.innerHTML = `
+        <div class="loading">
+            Loading play...
+        </div>
+    `;
+
+
+    const apiUrl =
+        `https://api.github.com/repos/` +
+        `${GITHUB_OWNER}/` +
+        `${GITHUB_REPO}/` +
+        `contents/${PLAY_FOLDER}?ref=${GITHUB_BRANCH}`;
+
+
+    try {
+
+        const response =
+            await fetch(apiUrl);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `GitHub API returned ${response.status}`
+            );
+
+        }
+
+
+        const files =
+            await response.json();
+
+
+        /*
+            Only use HTML files.
+
+            We explicitly ignore index.html
+            just in case one is ever added.
+        */
+
+        const htmlFiles =
+            files.filter(file => {
+
+                return (
+                    file.type === "file" &&
+                    /\.html$/i.test(file.name) &&
+                    file.name.toLowerCase() !==
+                        "index.html"
+                );
+
+            });
+
+
+        if (!htmlFiles.length) {
+
+            gameGrid.innerHTML = `
+                <div class="empty">
+                    Nothing is available yet.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+            Read all UGS files.
+
+            Promise.all allows the icons
+            to load in parallel.
+        */
+
+        games =
+            await Promise.all(
+                htmlFiles.map(
+                    file =>
+                        getGameInfo(file)
+                )
+            );
+
+
+        /*
+            Alphabetical order
+        */
+
+        games.sort((a, b) =>
+            a.name.localeCompare(
+                b.name
+            )
+        );
+
+
+        renderGames();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        gameGrid.innerHTML = `
+            <div class="error">
+                <strong>
+                    Could not load Play.
+                </strong>
+                <br><br>
+                Make sure the repository is public
+                and that the <strong>play</strong>
+                folder exists.
+                <br><br>
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER GAMES
+========================================================= */
+
+function renderGames() {
+
+    const search =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const filtered =
+        games.filter(game => {
+
+            return (
+                game.name
+                    .toLowerCase()
+                    .includes(search)
+                ||
+                game.fileName
+                    .toLowerCase()
+                    .includes(search)
+            );
+
+        });
+
+
+    if (!filtered.length) {
+
+        gameGrid.innerHTML = `
+            <div class="empty">
+                No results found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    gameGrid.innerHTML =
+        filtered.map(game => {
+
+            return `
+
+                <a
+                    class="game-card"
+                    href="${escapeAttribute(game.url)}"
+                    aria-label="${escapeAttribute(game.name)}"
+                >
+
+                    <img
+                        class="game-icon"
+                        src="${escapeAttribute(game.icon)}"
+                        alt=""
+                        loading="lazy"
+                        onerror="this.src='${escapeAttribute(createFallbackIcon())}'"
+                    >
+
+                    <div class="game-name">
+                        ${escapeHtml(game.name)}
+                    </div>
+
+                </a>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   ESCAPE ATTRIBUTE
+========================================================= */
+
+function escapeAttribute(value) {
+
+    return escapeHtml(value);
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+searchInput.addEventListener(
+    "input",
+    renderGames
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+loadGames();
+
+</script>
+
+</body>
+</html>
