@@ -118,8 +118,6 @@ body {
     overflow: hidden;
 }
 
-/* Crescent cutout */
-
 .moon::after {
     content: "";
 
@@ -373,7 +371,7 @@ body {
 }
 
 /* =========================
-   GAME TITLE OVERLAY
+   GAME TITLE
 ========================= */
 
 .game-name {
@@ -573,32 +571,15 @@ body {
 
 <body>
 
-<!-- =========================
-     PARTICLES
-========================= -->
-
 <div id="particles"></div>
-
-
-<!-- =========================
-     MAIN
-========================= -->
 
 <div class="container">
 
-    <!-- MOON -->
-
     <div class="moon"></div>
-
-
-    <!-- TITLE -->
 
     <h1 class="title">
         Eternal Arcade
     </h1>
-
-
-    <!-- SEARCH -->
 
     <div class="search">
 
@@ -614,11 +595,6 @@ body {
         >
 
     </div>
-
-
-    <!-- =========================
-         PLAY LIBRARY
-    ========================= -->
 
     <section class="play-section">
 
@@ -641,12 +617,10 @@ body {
 
 </div>
 
-
 <script>
 
 /* =========================================================
    ETERNAL ARCADE
-   AUTOMATIC PLAY LIBRARY
 ========================================================= */
 
 
@@ -655,11 +629,8 @@ body {
 ========================================================= */
 
 const GITHUB_OWNER = "voidware1";
-
 const GITHUB_REPO = "Eternal-Arcade";
-
 const GITHUB_BRANCH = "main";
-
 const PLAY_FOLDER = "play";
 
 
@@ -730,181 +701,6 @@ function cleanFileName(name) {
         .replace(/\b\w/g, char =>
             char.toUpperCase()
         );
-
-}
-
-
-/* =========================================================
-   FIND GAME ICON
-========================================================= */
-
-function findGameIcon(doc, gameUrl) {
-
-    /*
-        UGS normally contains:
-
-        <base href="...">
-
-        <link
-            rel="icon"
-            href="icons/icon-512x512.png"
-        >
-    */
-
-    const baseElement =
-        doc.querySelector(
-            "base[href]"
-        );
-
-
-    let baseUrl =
-        gameUrl;
-
-
-    if (baseElement) {
-
-        try {
-
-            baseUrl =
-                new URL(
-                    baseElement.getAttribute("href"),
-                    gameUrl
-                ).href;
-
-        } catch (error) {
-
-            console.warn(
-                "Invalid base URL:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* -----------------------------------------
-       Collect possible icons
-    ----------------------------------------- */
-
-    const iconLinks =
-        Array.from(
-            doc.querySelectorAll(
-                "link[href]"
-            )
-        ).filter(link => {
-
-            const rel =
-                (
-                    link.getAttribute("rel")
-                    || ""
-                ).toLowerCase();
-
-            return (
-                rel.includes("icon") ||
-                rel.includes("apple-touch-icon")
-            );
-
-        });
-
-
-    if (iconLinks.length) {
-
-        /*
-            Prefer the largest icon.
-        */
-
-        iconLinks.sort((a, b) => {
-
-            function getSize(link) {
-
-                const sizes =
-                    link.getAttribute("sizes");
-
-                if (!sizes) return 0;
-
-                const match =
-                    sizes.match(
-                        /(\d+)\s*x\s*(\d+)/i
-                    );
-
-                if (!match) return 0;
-
-                return (
-                    parseInt(match[1]) *
-                    parseInt(match[2])
-                );
-
-            }
-
-            return (
-                getSize(b) -
-                getSize(a)
-            );
-
-        });
-
-
-        const href =
-            iconLinks[0]
-                .getAttribute("href");
-
-
-        try {
-
-            return new URL(
-                href,
-                baseUrl
-            ).href;
-
-        } catch (error) {
-
-            console.warn(
-                "Could not resolve icon:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* -----------------------------------------
-       Try Open Graph image
-    ----------------------------------------- */
-
-    const ogImage =
-        doc.querySelector(
-            'meta[property="og:image"]'
-        );
-
-
-    if (ogImage) {
-
-        const content =
-            ogImage.getAttribute("content");
-
-        if (content) {
-
-            try {
-
-                return new URL(
-                    content,
-                    baseUrl
-                ).href;
-
-            } catch (error) {}
-
-        }
-
-    }
-
-
-    /* -----------------------------------------
-       Fallback
-    ----------------------------------------- */
-
-    return createFallbackIcon();
 
 }
 
@@ -987,7 +783,6 @@ function createFallbackIcon() {
         </svg>
     `;
 
-
     return (
         "data:image/svg+xml;charset=UTF-8," +
         encodeURIComponent(svg)
@@ -997,7 +792,7 @@ function createFallbackIcon() {
 
 
 /* =========================================================
-   GET GAME HTML
+   GET GAME INFO + ACTUAL UGS ICON
 ========================================================= */
 
 async function getGameInfo(file) {
@@ -1006,30 +801,22 @@ async function getGameInfo(file) {
         "play/" +
         encodeURIComponent(file.name);
 
-
     let title =
         cleanFileName(file.name);
 
-
-    let icon =
-        createFallbackIcon();
+    let icon = null;
 
 
     try {
 
-        /*
-            GitHub gives us a download URL
-            for every file.
-
-            We fetch the UGS HTML and inspect
-            its <head>.
-        */
+        /* -----------------------------------------
+           Fetch UGS HTML
+        ----------------------------------------- */
 
         const response =
             await fetch(
                 file.download_url
             );
-
 
         if (!response.ok) {
 
@@ -1044,19 +831,15 @@ async function getGameInfo(file) {
             await response.text();
 
 
-        const parser =
-            new DOMParser();
-
-
         const doc =
-            parser.parseFromString(
+            new DOMParser().parseFromString(
                 html,
                 "text/html"
             );
 
 
         /* -----------------------------------------
-           Get title
+           GAME TITLE
         ----------------------------------------- */
 
         if (doc.title) {
@@ -1066,8 +849,7 @@ async function getGameInfo(file) {
 
             if (
                 pageTitle &&
-                pageTitle.toLowerCase() !==
-                "game"
+                pageTitle.toLowerCase() !== "game"
             ) {
 
                 title =
@@ -1079,14 +861,181 @@ async function getGameInfo(file) {
 
 
         /* -----------------------------------------
-           Get UGS icon
+           FIND BASE URL
         ----------------------------------------- */
 
-        icon =
-            findGameIcon(
-                doc,
-                file.download_url
+        let baseURL =
+            file.download_url;
+
+        const base =
+            doc.querySelector(
+                "base[href]"
             );
+
+
+        if (base) {
+
+            try {
+
+                baseURL =
+                    new URL(
+                        base.getAttribute("href"),
+                        file.download_url
+                    ).href;
+
+            } catch (error) {
+
+                console.warn(
+                    "Invalid base URL:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* -----------------------------------------
+           FIND ALL ICONS
+        ----------------------------------------- */
+
+        const iconLinks =
+            Array.from(
+                doc.querySelectorAll(
+                    'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
+                )
+            );
+
+
+        let bestIcon = null;
+
+        let bestSize = -1;
+
+
+        for (const link of iconLinks) {
+
+            const href =
+                link.getAttribute("href");
+
+            if (!href) continue;
+
+
+            const sizes =
+                link.getAttribute("sizes") || "";
+
+            let size = 0;
+
+
+            const match =
+                sizes.match(
+                    /(\d+)\s*x\s*(\d+)/i
+                );
+
+
+            if (match) {
+
+                size =
+                    Number(match[1]) *
+                    Number(match[2]);
+
+            }
+
+
+            if (
+                bestIcon === null ||
+                size > bestSize
+            ) {
+
+                bestIcon =
+                    href;
+
+                bestSize =
+                    size;
+
+            }
+
+        }
+
+
+        /* -----------------------------------------
+           RESOLVE ACTUAL ICON URL
+        ----------------------------------------- */
+
+        if (bestIcon) {
+
+            try {
+
+                icon =
+                    new URL(
+                        bestIcon,
+                        baseURL
+                    ).href;
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not resolve icon:",
+                    bestIcon
+                );
+
+            }
+
+        }
+
+
+        /* -----------------------------------------
+           TRY OG IMAGE IF NO ICON
+        ----------------------------------------- */
+
+        if (!icon) {
+
+            const ogImage =
+                doc.querySelector(
+                    'meta[property="og:image"]'
+                );
+
+
+            if (ogImage) {
+
+                const content =
+                    ogImage.getAttribute(
+                        "content"
+                    );
+
+
+                if (content) {
+
+                    try {
+
+                        icon =
+                            new URL(
+                                content,
+                                baseURL
+                            ).href;
+
+                    } catch (error) {}
+
+                }
+
+            }
+
+        }
+
+
+        console.log(
+            "Game:",
+            file.name
+        );
+
+        console.log(
+            "Title:",
+            title
+        );
+
+        console.log(
+            "Icon:",
+            icon
+        );
 
 
     } catch (error) {
@@ -1102,13 +1051,18 @@ async function getGameInfo(file) {
 
     return {
 
-        name: title,
+        name:
+            title,
 
-        fileName: file.name,
+        fileName:
+            file.name,
 
-        url: gameUrl,
+        url:
+            gameUrl,
 
-        icon: icon
+        icon:
+            icon ||
+            createFallbackIcon()
 
     };
 
@@ -1119,98 +1073,103 @@ async function getGameInfo(file) {
    LOAD PLAY LIBRARY
 ========================================================= */
 
-async function getGameInfo(file) {
+async function loadGames() {
+
     try {
-        const response = await fetch(file.download_url);
+
+        gameGrid.innerHTML = `
+            <div class="loading">
+                Loading play...
+            </div>
+        `;
+
+
+        const apiURL =
+            `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PLAY_FOLDER}?ref=${GITHUB_BRANCH}`;
+
+
+        const response =
+            await fetch(apiURL);
+
 
         if (!response.ok) {
-            return {
-                title: "",
-                icon: null
-            };
+
+            throw new Error(
+                "GitHub API request failed: " +
+                response.status
+            );
+
         }
 
-        const html = await response.text();
-        const doc = new DOMParser().parseFromString(html, "text/html");
 
-        // Get game title
-        const title = doc.title?.trim() || "";
+        const files =
+            await response.json();
 
-        // Get the game's <base href>
-        let baseURL = file.download_url;
 
-        const base = doc.querySelector("base[href]");
+        /* -----------------------------------------
+           ONLY HTML GAME FILES
+        ----------------------------------------- */
 
-        if (base) {
-            try {
-                baseURL = new URL(
-                    base.getAttribute("href"),
-                    file.download_url
-                ).href;
-            } catch (e) {
-                console.warn("Invalid base URL:", e);
-            }
-        }
+        const gameFiles =
+            files.filter(file => {
 
-        // Find all possible icons
-        const iconLinks = [
-            ...doc.querySelectorAll(
-                'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
-            )
-        ];
+                return (
+                    file.type === "file" &&
+                    file.name
+                        .toLowerCase()
+                        .endsWith(".html") &&
+                    file.name
+                        .toLowerCase() !==
+                        "index.html"
+                );
 
-        let bestIcon = null;
-        let bestSize = 0;
+            });
 
-        for (const link of iconLinks) {
-            const href = link.getAttribute("href");
 
-            if (!href) continue;
+        /* -----------------------------------------
+           GET GAME INFO
+        ----------------------------------------- */
 
-            let size = 0;
+        games =
+            await Promise.all(
+                gameFiles.map(
+                    file =>
+                        getGameInfo(file)
+                )
+            );
 
-            const sizes = link.getAttribute("sizes") || "";
 
-            const match = sizes.match(/(\d+)\s*x\s*(\d+)/i);
+        /* -----------------------------------------
+           RENDER
+        ----------------------------------------- */
 
-            if (match) {
-                size = Number(match[1]) * Number(match[2]);
-            }
+        renderGames();
 
-            if (!bestIcon || size > bestSize) {
-                bestIcon = href;
-                bestSize = size;
-            }
-        }
-
-        // Convert the relative icon path into the actual UGS icon URL
-        let icon = null;
-
-        if (bestIcon) {
-            try {
-                icon = new URL(bestIcon, baseURL).href;
-            } catch (e) {
-                console.warn("Could not resolve icon:", bestIcon);
-            }
-        }
-
-        console.log("Game:", title);
-        console.log("Icon:", icon);
-
-        return {
-            title,
-            icon
-        };
 
     } catch (error) {
-        console.warn("Game info failed:", file.name, error);
 
-        return {
-            title: "",
-            icon: null
-        };
+        console.error(
+            "Library error:",
+            error
+        );
+
+
+        gameGrid.innerHTML = `
+            <div class="error">
+
+                Could not load the game library.
+
+                <br><br>
+
+                ${escapeHtml(error.message)}
+
+            </div>
+        `;
+
     }
+
 }
+
 
 /* =========================================================
    RENDER GAMES
@@ -1267,9 +1226,10 @@ function renderGames() {
                     <img
                         class="game-icon"
                         src="${escapeAttribute(game.icon)}"
-                        alt=""
+                        alt="${escapeAttribute(game.name)}"
                         loading="lazy"
-                        onerror="this.src='${escapeAttribute(createFallbackIcon())}'"
+                        referrerpolicy="no-referrer"
+                        onerror="this.onerror=null;this.src='${escapeAttribute(createFallbackIcon())}'"
                     >
 
                     <div class="game-name">
