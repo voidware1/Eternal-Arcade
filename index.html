@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +22,13 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
+
     background: #000;
     color: white;
+
     font-family: Arial, sans-serif;
 }
+
 
 /* =========================
    PARTICLES
@@ -33,16 +37,21 @@ body {
 #particles {
     position: fixed;
     inset: 0;
+
     overflow: hidden;
     pointer-events: none;
+
     z-index: 0;
 }
 
 .particle {
     position: absolute;
+
     width: 3px;
     height: 3px;
+
     border-radius: 50%;
+
     background: #a855f7;
 
     box-shadow:
@@ -76,6 +85,7 @@ body {
 
 }
 
+
 /* =========================
    MAIN
 ========================= */
@@ -93,6 +103,7 @@ body {
     padding-top: 90px;
     padding-bottom: 100px;
 }
+
 
 /* =========================
    MOON
@@ -134,6 +145,7 @@ body {
     top: -13px;
 }
 
+
 /* =========================
    TITLE
 ========================= */
@@ -151,6 +163,7 @@ body {
     text-shadow:
         0 0 15px rgba(168, 85, 247, .35);
 }
+
 
 /* =========================
    SEARCH
@@ -172,18 +185,18 @@ body {
     background:
         linear-gradient(
             135deg,
-            rgba(255,255,255,.08),
-            rgba(168,85,247,.06)
+            rgba(255,255,255,.035),
+            rgba(168,85,247,.025)
         );
 
-    border: 1px solid rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.09);
 
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
 
     box-shadow:
-        inset 0 1px 1px rgba(255,255,255,.12),
-        0 10px 40px rgba(0,0,0,.5);
+        inset 0 1px 1px rgba(255,255,255,.08),
+        0 10px 40px rgba(0,0,0,.35);
 
     transition: .25s;
 
@@ -216,7 +229,7 @@ body {
         rgba(168,85,247,.5);
 
     box-shadow:
-        inset 0 1px 1px rgba(255,255,255,.12),
+        inset 0 1px 1px rgba(255,255,255,.1),
         0 0 30px rgba(168,85,247,.15),
         0 10px 40px rgba(0,0,0,.5);
 }
@@ -246,6 +259,7 @@ body {
     color: rgba(255,255,255,.42);
 }
 
+
 /* =========================
    PLAY SECTION
 ========================= */
@@ -268,6 +282,7 @@ body {
     letter-spacing: -.5px;
 }
 
+
 /* =========================
    GAME GRID
 ========================= */
@@ -285,6 +300,7 @@ body {
     gap: 18px;
 }
 
+
 /* =========================
    GAME CARD
 ========================= */
@@ -301,21 +317,25 @@ body {
 
     text-decoration: none;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     background:
         linear-gradient(
             135deg,
-            rgba(168,85,247,.12),
-            rgba(255,255,255,.04)
+            rgba(168,85,247,.045),
+            rgba(255,255,255,.018)
         );
 
     border:
-        1px solid rgba(255,255,255,.12);
+        1px solid rgba(255,255,255,.08);
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.45);
+        0 10px 35px rgba(0,0,0,.3);
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 
     transition:
         transform .25s ease,
@@ -338,37 +358,6 @@ body {
         0 15px 45px rgba(124,58,237,.25);
 }
 
-/* =========================
-   GAME ICON
-========================= */
-
-.game-icon {
-
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    transition:
-        opacity .3s ease,
-        transform .35s ease,
-        filter .3s ease;
-}
-
-.game-card:hover .game-icon {
-
-    opacity: .08;
-
-    transform: scale(1.08);
-
-    filter:
-        blur(2px)
-        brightness(.5);
-}
 
 /* =========================
    GAME TITLE
@@ -401,25 +390,23 @@ body {
         0 0 12px rgba(168,85,247,.8),
         0 2px 8px #000;
 
-    opacity: 0;
-
-    transform:
-        translateY(8px);
-
     transition:
-        opacity .25s ease,
-        transform .25s ease;
+        transform .25s ease,
+        text-shadow .25s ease;
 
     pointer-events: none;
 }
 
 .game-card:hover .game-name {
 
-    opacity: 1;
-
     transform:
-        translateY(0);
+        scale(1.05);
+
+    text-shadow:
+        0 0 18px rgba(168,85,247,1),
+        0 2px 8px #000;
 }
+
 
 /* =========================
    LOADING
@@ -469,6 +456,7 @@ body {
 
 }
 
+
 /* =========================
    EMPTY
 ========================= */
@@ -485,6 +473,7 @@ body {
         rgba(255,255,255,.4);
 }
 
+
 /* =========================
    ERROR
 ========================= */
@@ -498,10 +487,10 @@ body {
     border-radius: 15px;
 
     background:
-        rgba(168,85,247,.06);
+        rgba(168,85,247,.04);
 
     border:
-        1px solid rgba(168,85,247,.15);
+        1px solid rgba(168,85,247,.12);
 
     color:
         rgba(255,255,255,.55);
@@ -509,7 +498,11 @@ body {
     text-align: center;
 
     line-height: 1.6;
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
+
 
 /* =========================
    MOBILE
@@ -566,12 +559,15 @@ body {
             );
     }
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div id="particles"></div>
+
 
 <div class="container">
 
@@ -580,6 +576,7 @@ body {
     <h1 class="title">
         Eternal Arcade
     </h1>
+
 
     <div class="search">
 
@@ -595,6 +592,7 @@ body {
         >
 
     </div>
+
 
     <section class="play-section">
 
@@ -616,6 +614,7 @@ body {
     </section>
 
 </div>
+
 
 <script>
 
@@ -706,93 +705,8 @@ function cleanFileName(name) {
 
 
 /* =========================================================
-   FALLBACK ICON
-========================================================= */
-
-function createFallbackIcon() {
-
-    const svg = `
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
-        >
-
-            <rect
-                width="512"
-                height="512"
-                rx="80"
-                fill="#12051f"
-            />
-
-            <circle
-                cx="256"
-                cy="256"
-                r="170"
-                fill="#a855f7"
-                opacity=".15"
-            />
-
-            <path
-                d="
-                    M160 300
-                    C130 300 110 275 120 245
-                    L135 200
-                    C145 170 175 150 205 160
-                    L256 180
-                    L307 160
-                    C337 150 367 170 377 200
-                    L392 245
-                    C402 275 382 300 352 300
-                    C330 300 315 286 300 270
-                    L280 250
-                    H232
-                    L212 270
-                    C197 286 182 300 160 300Z
-                "
-                fill="#a855f7"
-            />
-
-            <circle
-                cx="210"
-                cy="225"
-                r="10"
-                fill="#000"
-            />
-
-            <circle
-                cx="302"
-                cy="225"
-                r="10"
-                fill="#000"
-            />
-
-            <circle
-                cx="335"
-                cy="210"
-                r="8"
-                fill="#000"
-            />
-
-            <circle
-                cx="335"
-                cy="240"
-                r="8"
-                fill="#000"
-            />
-
-        </svg>
-    `;
-
-    return (
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg)
-    );
-
-}
-
-
-/* =========================================================
-   GET GAME INFO + ACTUAL UGS ICON
+   GET GAME INFO
+   DETECTS TITLE FROM THE ACTUAL GAME HTML
 ========================================================= */
 
 async function getGameInfo(file) {
@@ -804,14 +718,11 @@ async function getGameInfo(file) {
     let title =
         cleanFileName(file.name);
 
-    let icon = null;
-
-
     try {
 
-        /* -----------------------------------------
-           Fetch UGS HTML
-        ----------------------------------------- */
+        /*
+         * Fetch the actual game HTML
+         */
 
         const response =
             await fetch(
@@ -831,6 +742,10 @@ async function getGameInfo(file) {
             await response.text();
 
 
+        /*
+         * Parse the game HTML
+         */
+
         const doc =
             new DOMParser().parseFromString(
                 html,
@@ -838,184 +753,33 @@ async function getGameInfo(file) {
             );
 
 
-        /* -----------------------------------------
-           GAME TITLE
-        ----------------------------------------- */
+        /*
+         * Find the actual <title>
+         */
 
-        if (doc.title) {
+        const pageTitle =
+            doc.querySelector("title");
 
-            const pageTitle =
-                doc.title.trim();
+
+        if (pageTitle) {
+
+            const detectedTitle =
+                pageTitle.textContent.trim();
+
+
+            /*
+             * Only use the detected title
+             * if it is actually useful.
+             */
 
             if (
-                pageTitle &&
-                pageTitle.toLowerCase() !== "game"
+                detectedTitle &&
+                detectedTitle.toLowerCase() !== "game" &&
+                detectedTitle.toLowerCase() !== "untitled"
             ) {
 
                 title =
-                    pageTitle;
-
-            }
-
-        }
-
-
-        /* -----------------------------------------
-           FIND BASE URL
-        ----------------------------------------- */
-
-        let baseURL =
-            file.download_url;
-
-        const base =
-            doc.querySelector(
-                "base[href]"
-            );
-
-
-        if (base) {
-
-            try {
-
-                baseURL =
-                    new URL(
-                        base.getAttribute("href"),
-                        file.download_url
-                    ).href;
-
-            } catch (error) {
-
-                console.warn(
-                    "Invalid base URL:",
-                    error
-                );
-
-            }
-
-        }
-
-
-        /* -----------------------------------------
-           FIND ALL ICONS
-        ----------------------------------------- */
-
-        const iconLinks =
-            Array.from(
-                doc.querySelectorAll(
-                    'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
-                )
-            );
-
-
-        let bestIcon = null;
-
-        let bestSize = -1;
-
-
-        for (const link of iconLinks) {
-
-            const href =
-                link.getAttribute("href");
-
-            if (!href) continue;
-
-
-            const sizes =
-                link.getAttribute("sizes") || "";
-
-            let size = 0;
-
-
-            const match =
-                sizes.match(
-                    /(\d+)\s*x\s*(\d+)/i
-                );
-
-
-            if (match) {
-
-                size =
-                    Number(match[1]) *
-                    Number(match[2]);
-
-            }
-
-
-            if (
-                bestIcon === null ||
-                size > bestSize
-            ) {
-
-                bestIcon =
-                    href;
-
-                bestSize =
-                    size;
-
-            }
-
-        }
-
-
-        /* -----------------------------------------
-           RESOLVE ACTUAL ICON URL
-        ----------------------------------------- */
-
-        if (bestIcon) {
-
-            try {
-
-                icon =
-                    new URL(
-                        bestIcon,
-                        baseURL
-                    ).href;
-
-            } catch (error) {
-
-                console.warn(
-                    "Could not resolve icon:",
-                    bestIcon
-                );
-
-            }
-
-        }
-
-
-        /* -----------------------------------------
-           TRY OG IMAGE IF NO ICON
-        ----------------------------------------- */
-
-        if (!icon) {
-
-            const ogImage =
-                doc.querySelector(
-                    'meta[property="og:image"]'
-                );
-
-
-            if (ogImage) {
-
-                const content =
-                    ogImage.getAttribute(
-                        "content"
-                    );
-
-
-                if (content) {
-
-                    try {
-
-                        icon =
-                            new URL(
-                                content,
-                                baseURL
-                            ).href;
-
-                    } catch (error) {}
-
-                }
+                    detectedTitle;
 
             }
 
@@ -1028,20 +792,19 @@ async function getGameInfo(file) {
         );
 
         console.log(
-            "Title:",
+            "Detected title:",
             title
         );
 
-        console.log(
-            "Icon:",
-            icon
-        );
-
-
     } catch (error) {
 
+        /*
+         * If the game cannot be inspected,
+         * the filename title remains.
+         */
+
         console.warn(
-            "Could not inspect:",
+            "Could not inspect game:",
             file.name,
             error
         );
@@ -1058,11 +821,7 @@ async function getGameInfo(file) {
             file.name,
 
         url:
-            gameUrl,
-
-        icon:
-            icon ||
-            createFallbackIcon()
+            gameUrl
 
     };
 
@@ -1106,29 +865,34 @@ async function loadGames() {
             await response.json();
 
 
-        /* -----------------------------------------
-           ONLY HTML GAME FILES
-        ----------------------------------------- */
+        /*
+         * Only HTML game files
+         */
 
         const gameFiles =
             files.filter(file => {
 
                 return (
+
                     file.type === "file" &&
+
                     file.name
                         .toLowerCase()
                         .endsWith(".html") &&
+
                     file.name
                         .toLowerCase() !==
                         "index.html"
+
                 );
 
             });
 
 
-        /* -----------------------------------------
-           GET GAME INFO
-        ----------------------------------------- */
+        /*
+         * Read every game page
+         * to get its actual title.
+         */
 
         games =
             await Promise.all(
@@ -1139,9 +903,9 @@ async function loadGames() {
             );
 
 
-        /* -----------------------------------------
-           RENDER
-        ----------------------------------------- */
+        /*
+         * Render games
+         */
 
         renderGames();
 
@@ -1187,13 +951,17 @@ function renderGames() {
         games.filter(game => {
 
             return (
+
                 game.name
                     .toLowerCase()
                     .includes(search)
+
                 ||
+
                 game.fileName
                     .toLowerCase()
                     .includes(search)
+
             );
 
         });
@@ -1222,15 +990,6 @@ function renderGames() {
                     href="${escapeAttribute(game.url)}"
                     aria-label="${escapeAttribute(game.name)}"
                 >
-
-                    <img
-                        class="game-icon"
-                        src="${escapeAttribute(game.icon)}"
-                        alt="${escapeAttribute(game.name)}"
-                        loading="lazy"
-                        referrerpolicy="no-referrer"
-                        onerror="this.onerror=null;this.src='${escapeAttribute(createFallbackIcon())}'"
-                    >
 
                     <div class="game-name">
                         ${escapeHtml(game.name)}
@@ -1292,3 +1051,4 @@ loadGames();
 
 </body>
 </html>
+```
