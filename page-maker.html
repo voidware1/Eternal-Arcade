@@ -824,6 +824,10 @@ button:hover {
 
     code += "</div>\n";
 
+    /* AD SCRIPT */
+
+    code += "<script>\n";
+
     code += `
 const adFrame = document.querySelector(".ad iframe");
 const adBox = document.querySelector(".ad");
@@ -857,6 +861,8 @@ function requestAdResize() {
 adFrame.addEventListener("load", requestAdResize);
 setTimeout(requestAdResize, 1200);
 `;
+
+    code += "<\\/script>\n";
 
 
     /* GAME */
