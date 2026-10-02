@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eternal Arcade — FNAF World</title>
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+#particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #9b4dff;
+    box-shadow: 0 0 10px #9b4dff;
+    opacity: .45;
+    animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    from { transform: translateY(110vh); }
+    to { transform: translateY(-20vh); }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #f5f0ff;
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(125,45,220,.28),
+            transparent 40%
+        ),
+        #050308;
+    overflow-x: hidden;
+}
+
+.container {
+    width: min(1200px, calc(100% - 24px));
+    margin: auto;
+    padding-bottom: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.glass {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.045),
+            rgba(255,255,255,.016)
+        );
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.05),
+        0 0 35px rgba(112,35,180,.07);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 20px;
+}
+
+.ad {
+    margin: 12px 0;
+    overflow: hidden;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: min-height .25s ease, height .25s ease;
+}
+
+.ad iframe {
+    width: 100%;
+    height: 90px;
+    min-height: 70px;
+    border: 0;
+    display: block;
+    transition: height .25s ease;
+}
+
+.game-panel {
+    padding: 10px;
+}
+
+#gameFrame {
+    width: 100%;
+    height: 75vh;
+    min-height: 500px;
+    display: block;
+    border: 0;
+    border-radius: 14px;
+    background: #000;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 4px 4px;
+}
+
+button {
+    border: 1px solid rgba(174,108,255,.35);
+    color: white;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(155,77,255,.35),
+            rgba(103,33,198,.16)
+        );
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 18px;
+    border-radius: 13px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(190,130,255,.75);
+    box-shadow: 0 0 25px rgba(155,77,255,.25);
+}
+
+.section-title {
+    margin: 32px 4px 15px;
+}
+
+.play-more {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(145px, 1fr));
+    gap: 15px;
+}
+
+.game-card {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 17px;
+    border: 1px solid rgba(255,255,255,.08);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.055),
+            rgba(255,255,255,.018)
+        );
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    transition: .25s;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.game-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(190,130,255,.55);
+    box-shadow: 0 10px 35px rgba(155,77,255,.16);
+}
+
+.game-title {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.loading {
+    color: #93889f;
+    padding: 20px 4px;
+}
+
+.loading {
+    color: #93889f;
+    padding: 20px 4px;
+}
+
+@media (max-width: 700px) {
+
+    #gameFrame {
+        height: 65vh;
+        min-height: 400px;
+    }
+
+    .ad iframe {
+        height: 70px;
+    }
+
+    .play-more {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+</head>
+<body>
+<div id="particles"></div>
+<main class="container">
+<div class="glass ad">
+<iframe src="https://games4fun.org/ads/banner.html" title="Advertisement" scrolling="no" loading="lazy"></iframe>
+</div>
+<script>
+
+const adFrame = document.querySelector(".ad iframe");
+const adBox = document.querySelector(".ad");
+
+window.addEventListener("message", function(event) {
+    if (!adFrame || event.source !== adFrame.contentWindow) return;
+
+    const data = event.data;
+
+    if (!data || data.type !== "eternal-arcade-ad-resize") return;
+
+    const height = Number(data.height);
+
+    if (!Number.isFinite(height)) return;
+
+    const safeHeight = Math.max(50, Math.min(500, height));
+
+    adFrame.style.height = safeHeight + "px";
+    adBox.style.minHeight = safeHeight + "px";
+});
+
+function requestAdResize() {
+    try {
+        adFrame.contentWindow.postMessage(
+            { type: "eternal-arcade-ad-request-size" },
+            "*"
+        );
+    } catch (error) {}
+}
+
+adFrame.addEventListener("load", requestAdResize);
+setTimeout(requestAdResize, 1200);
+</script>
+<section class="glass game-panel">
+<iframe id="gameFrame" title="Game"></iframe>
+<div class="controls">
+<button onclick="goHome()">🏠 Home</button>
+<button onclick="fullscreenGame()">⛶ Fullscreen</button>
+<button onclick="openAboutBlank()">↗ Open About:Blank</button>
+</div>
+</section>
+<h2 class="section-title">🎮 Play More</h2>
+<div id="playMore" class="play-more"><div class="loading">Loading games...</div></div>
+</main>
+<script>
+const GAME_DATA = "PCEtLSBVbHRpbWF0ZSBHYW1lIFN0YXNoIGZpbGUtLT4KPCEtLSBGb3IgdGhlIHJlZ3VsYXJseSB1cGRhdGluZyBkb2MgZ28gdG8gaHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8xX0ZtSDNCbFNCUUk3RkdnQVFMNTktWlBlOGVDeHMzNXdlbDZKVXlWYUc4US8gLS0+Cgo8IWRvY3R5cGUgaHRtbD4KPGh0bWwgbGFuZz0iZW4iPgogIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgdHlwZT0idGV4dC9jc3MiIGhyZWY9InN0eWxlLmNzcyIgLz4KCiAgPGhlYWQ+CiAgICA8YmFzZSBocmVmPSJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvZ2gvYnViYmxmYW4vZm5hZkBsYXRlc3Qvdy8iIC8+CiAgICA8bGluayByZWw9Imljb24iIHR5cGU9ImltYWdlL3gtaWNvbiIgaHJlZj0iZmF2aWNvbi5pY28iIC8+CiAgICA8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD1VVEYtOCIgLz4KICAgIDxtZXRhCiAgICAgIG5hbWU9InZpZXdwb3J0IgogICAgICBjb250ZW50PSJpbml0aWFsLXNjYWxlPTEuMCwgbWF4aW11bS1zY2FsZT0xLjAsIG1pbmltdW0tc2NhbGU9MS4wLCB1c2VyLXNjYWxhYmxlPW5vLCB0YXJnZXQtZGVuc2l0eWRwaT1kZXZpY2UtZHBpIgogICAgLz4KICAgIDxtZXRhIG5hbWU9ImFwcGxlLW1vYmlsZS13ZWItYXBwLWNhcGFibGUiIGNvbnRlbnQ9InllcyIgLz4KICAgIDxtZXRhIG5hbWU9ImFwcGxlLW1vYmlsZS13ZWItYXBwLXN0YXR1cy1iYXItc3R5bGUiIGNvbnRlbnQ9ImJsYWNrIiAvPgogICAgPG1ldGEgbmFtZT0iSGFuZGhlbGRGcmllbmRseSIgY29udGVudD0idHJ1ZSIgLz4KICAgIDx0aXRsZT5GaXZlIE5pZ2h0cyBhdCBGcmVkZHkncyBXb3JsZDwvdGl0bGU+CiAgPC9oZWFkPgoKICA8Ym9keT4KICAgIDxkaXYKICAgICAgc3R5bGU9ImRpc3BsYXk6IGlubGluZS1ibG9jazsgLXdlYmtpdC11c2VyLXNlbGVjdDogbm9uZTsgdGV4dC1hbGlnbjogbGVmdCIKICAgID4KICAgICAgPGNhbnZhcyBpZD0iTU1GQ2FudmFzIiB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiPgogICAgICAgIFlvdXIgYnJvd3NlciBkb2VzIG5vdCBzdXBwb3J0IENhbnZhcywgUGxlYXNlIHRyeSBhZ2Fpbi4KICAgICAgPC9jYW52YXM+CiAgICA8L2Rpdj4KICAgIDxkaXYgaWQ9InByb2dyZXNzLWNvbnRhaW5lciI+CiAgICAgIDxkaXYgc3R5bGU9Im1hcmdpbi1ib3R0b206IDZweCI+CiAgICAgICAgRG93bmxvYWRpbmcuLi4gPHNwYW4gaWQ9ImRvd25sb2FkLXRleHQiPjAlPC9zcGFuPgogICAgICA8L2Rpdj4KICAgICAgPGRpdgogICAgICAgIHN0eWxlPSIKICAgICAgICAgIHdpZHRoOiAxMDAlOwogICAgICAgICAgYmFja2dyb3VuZDogIzQ0NDsKICAgICAgICAgIGJvcmRlci1yYWRpdXM6IDZweDsKICAgICAgICAgIG92ZXJmbG93OiBoaWRkZW47CiAgICAgICAgIgogICAgICA+CiAgICAgICAgPGRpdgogICAgICAgICAgaWQ9ImRvd25sb2FkLWJhciIKICAgICAgICAgIHN0eWxlPSIKICAgICAgICAgICAgaGVpZ2h0OiAxMHB4OwogICAgICAgICAgICBiYWNrZ3JvdW5kOiAjM2I4MmY2OwogICAgICAgICAgICB3aWR0aDogMCU7CiAgICAgICAgICAgIHRyYW5zaXRpb246IHdpZHRoIDAuMnM7CiAgICAgICAgICAiCiAgICAgICAgPjwvZGl2PgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBzdHlsZT0ibWFyZ2luOiAxMnB4IDAgNnB4Ij4KICAgICAgICBFeHRyYWN0aW5nLi4uIDxzcGFuIGlkPSJleHRyYWN0LXRleHQiPjAlPC9zcGFuPgogICAgICA8L2Rpdj4KICAgICAgPGRpdgogICAgICAgIHN0eWxlPSIKICAgICAgICAgIHdpZHRoOiAxMDAlOwogICAgICAgICAgYmFja2dyb3VuZDogIzQ0NDsKICAgICAgICAgIGJvcmRlci1yYWRpdXM6IDZweDsKICAgICAgICAgIG92ZXJmbG93OiBoaWRkZW47CiAgICAgICAgIgogICAgICA+CiAgICAgICAgPGRpdgogICAgICAgICAgaWQ9ImV4dHJhY3QtYmFyIgogICAgICAgICAgc3R5bGU9IgogICAgICAgICAgICBoZWlnaHQ6IDEwcHg7CiAgICAgICAgICAgIGJhY2tncm91bmQ6ICMxMGI5ODE7CiAgICAgICAgICAgIHdpZHRoOiAwJTsKICAgICAgICAgICAgdHJhbnNpdGlvbjogd2lkdGggMC4yczsKICAgICAgICAgICIKICAgICAgICA+PC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgICA8c2NyaXB0IHNyYz0iaHR0cHM6Ly9jZG5qcy5jbG91ZGZsYXJlLmNvbS9hamF4L2xpYnMvanN6aXAvMy4xMC4xL2pzemlwLm1pbi5qcyI+PC9zY3JpcHQ+CiAgICA8c2NyaXB0IHNyYz0ibWFpbi5qcyI+PC9zY3JpcHQ+CiAgPC9ib2R5Pgo8L2h0bWw+";
+const CURRENT_GAME = "FNAF World.html";
+
+const particleContainer = document.getElementById("particles");
+
+for (let i = 0; i < 70; i++) {
+    const particle = document.createElement("div");
+    particle.className = "particle";
+    particle.style.left = Math.random() * 100 + "%";
+    particle.style.animationDuration = (8 + Math.random() * 18) + "s";
+    particle.style.animationDelay = (-Math.random() * 20) + "s";
+    particle.style.opacity = (.15 + Math.random() * .65);
+    particleContainer.appendChild(particle);
+}
+
+function decodeGame() {
+
+    const binary = atob(GAME_DATA);
+
+    const bytes =
+        new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+
+    return new TextDecoder().decode(bytes);
+}
+
+const gameHTML = decodeGame();
+
+const gameBlob = new Blob(
+    [gameHTML],
+    { type: "text/html" }
+);
+
+const gameURL =
+    URL.createObjectURL(gameBlob);
+
+document.getElementById("gameFrame").src =
+    gameURL;
+
+
+function goHome() {
+    window.location.href = "../";
+}
+
+function fullscreenGame() {
+
+    const frame =
+        document.getElementById("gameFrame");
+
+    if (frame.requestFullscreen) {
+        frame.requestFullscreen();
+    } else if (frame.webkitRequestFullscreen) {
+        frame.webkitRequestFullscreen();
+    }
+}
+
+
+function openAboutBlank() {
+
+    const win =
+        window.open("about:blank", "_blank");
+
+    if (!win) {
+
+        alert(
+            "Your browser blocked the new tab. Allow pop-ups for this site."
+        );
+
+        return;
+    }
+
+    win.document.open();
+    win.document.write(gameHTML);
+    win.document.close();
+}
+
+
+const API =
+    "https://api.github.com/repos/voidware1/Eternal-Arcade/contents/play?ref=main";
+
+
+async function loadPlayMore() {
+
+    const container =
+        document.getElementById("playMore");
+
+    try {
+
+        const response =
+            await fetch(API);
+
+        if (!response.ok) {
+            throw new Error("GitHub API error");
+        }
+
+        const files =
+            await response.json();
+
+        const games =
+            files.filter(function(file) {
+
+                return (
+                    file.type === "file" &&
+                    file.name.toLowerCase().endsWith(".html") &&
+                    file.name !== "index.html" &&
+                    file.name !== CURRENT_GAME
+                );
+
+            });
+
+        if (!games.length) {
+
+            container.innerHTML =
+                '<div class="loading">No other games found.</div>';
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        for (
+            const file of games.slice(0, 24)
+        ) {
+
+            const card =
+                document.createElement("a");
+
+            card.className = "game-card";
+
+            card.href =
+                encodeURIComponent(file.name);
+
+            const title =
+                document.createElement("div");
+
+            title.className = "game-title";
+
+            title.textContent =
+                cleanFilename(file.name);
+
+            try {
+
+                const gameResponse =
+                    await fetch(file.download_url);
+
+                const gameHTML =
+                    await gameResponse.text();
+
+                const doc =
+                    new DOMParser()
+                        .parseFromString(
+                            gameHTML,
+                            "text/html"
+                        );
+
+                const pageTitle =
+                    doc.title.trim();
+
+                if (
+                    pageTitle &&
+                    pageTitle.toLowerCase() !== "eternal arcade"
+                ) {
+                    title.textContent = pageTitle;
+                }
+
+            } catch (error) {
+                console.log(
+                    "Could not read title:",
+                    error
+                );
+            }
+
+            card.appendChild(title);
+
+            container.appendChild(card);
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            '<div class="loading">Unable to load games.</div>';
+    }
+}
+
+
+function cleanFilename(name) {
+
+    return name
+        .replace(/\.html?$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+}
+
+
+loadPlayMore();
+</script>
+</body>
+</html>
