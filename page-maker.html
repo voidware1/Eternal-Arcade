@@ -585,7 +585,7 @@ function buildGeneratedPage(
     code += '<meta name="viewport" ';
     code += 'content="width=device-width, initial-scale=1.0">\n';
 
-    code += "<title>" + filename.replace(/\.html?$/i, "").replace(/[-_]+/g, " ") + "</title>\n";
+    code += "<title>Eternal Arcade — " + filename.replace(/\.html?$/i, "").replace(/[-_]+/g, " ") + "</title>\n";
 
     code += "<style>\n";
 
@@ -824,8 +824,6 @@ button:hover {
 
     code += "</div>\n";
 
-    code += "<script>\n";
-
     code += `
 const adFrame = document.querySelector(".ad iframe");
 const adBox = document.querySelector(".ad");
@@ -860,8 +858,6 @@ adFrame.addEventListener("load", requestAdResize);
 setTimeout(requestAdResize, 1200);
 `;
 
-    code += "<\/script>\n";
-
 
     /* GAME */
 
@@ -872,6 +868,8 @@ setTimeout(requestAdResize, 1200);
     code += 'title="Game"></iframe>\n';
 
     code += '<div class="controls">\n';
+
+    code += '<button onclick="goHome()">🏠 Home</button>\n';
 
     code += '<button onclick="fullscreenGame()">';
     code += "⛶ Fullscreen";
@@ -949,6 +947,10 @@ const gameURL =
 document.getElementById("gameFrame").src =
     gameURL;
 
+
+function goHome() {
+    window.location.href = "../";
+}
 
 function fullscreenGame() {
 
@@ -1036,7 +1038,6 @@ async function loadPlayMore() {
             card.className = "game-card";
 
             card.href =
-                "play/" +
                 encodeURIComponent(file.name);
 
             const title =
