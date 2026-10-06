@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="eternal-arcade" content="true">
+  <meta name="eternal-theme" content="inherit">
+  <title>Dash Party - Eternal Arcade</title>
+  <style>
+    :root {
+      --accent: #9b4dff;
+      --accent-rgb: 155,77,255;
+      --accent-light: #c79cff;
+      --accent-dark: #6721c6;
+      --bg: #000;
+      --panel: rgba(255,255,255,.055);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: radial-gradient(circle at 50% -10%, rgba(var(--accent-rgb), .25), transparent 40%), var(--bg);
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    #particles {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .particle {
+      position: absolute; width: 3px; height: 3px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 9px rgba(var(--accent-rgb), .9);
+      animation: floatParticle linear infinite;
+    }
+    @keyframes floatParticle {
+      from { transform: translateY(110vh); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+    .container {
+      position: relative; z-index: 1;
+      width: min(1200px, calc(100% - 24px));
+      margin: auto; padding: 24px 0 60px;
+    }
+    .glass {
+      background: linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+      border: 1px solid rgba(var(--accent-rgb), .28);
+      border-radius: 20px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 45px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.05);
+    }
+    .header { padding: 18px; margin-bottom: 14px; }
+    .title { margin: 0; font-size: clamp(22px, 4vw, 34px); }
+    .subtitle { margin-top: 7px; color: rgba(255,255,255,.6); font-size: 14px; }
+    .ad { padding: 10px; margin-bottom: 14px; overflow: hidden; }
+    .ad iframe {
+      display: block; width: 100%; height: 90px; border: 0; border-radius: 14px; background: #000;
+    }
+    .game-panel { padding: 10px; }
+    #gameFrame {
+      display: block; width: 100%; height: 75vh; min-height: 500px;
+      border: 0; border-radius: 15px; background: #000;
+    }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    button {
+      border: 1px solid rgba(var(--accent-rgb), .35);
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), .22), rgba(var(--accent-rgb), .08));
+      color: white; padding: 11px 16px; border-radius: 13px;
+      cursor: pointer; font-weight: 600;
+    }
+    button:hover {
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), .35), rgba(var(--accent-rgb), .13));
+    }
+    .notice {
+      margin-top: 12px; padding: 12px 14px; border-radius: 13px;
+      background: rgba(var(--accent-rgb), .08); color: rgba(255,255,255,.6); font-size: 13px;
+    }
+    .section { margin-top: 18px; padding: 18px; }
+    .section h2 { margin-top: 0; }
+    .play-more {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
+    }
+    .game-card {
+      display: block; min-height: 90px; padding: 15px; border-radius: 15px;
+      border: 1px solid rgba(var(--accent-rgb), .22);
+      background: linear-gradient(135deg, rgba(var(--accent-rgb), .10), rgba(255,255,255,.025));
+      color: white; text-decoration: none;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .game-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(var(--accent-rgb), .6);
+    }
+    .game-card-title { font-weight: 700; line-height: 1.25; }
+    .game-card-file {
+      margin-top: 8px; color: rgba(255,255,255,.5); font-size: 11px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .empty { color: rgba(255,255,255,.5); }
+    .report { margin-top: 16px; text-align: center; }
+    .report a { color: var(--accent-light); }
+    .footer { text-align: center; color: rgba(255,255,255,.4); font-size: 12px; margin-top: 30px; }
+    @media (max-width: 600px) {
+      #gameFrame { min-height: 400px; height: 70vh; }
+      .play-more { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles"></div>
+  <div class="container">
+    <div class="glass header">
+      <h1 class="title">Dash Party</h1>
+      <div class="subtitle">cldashio.html</div>
+    </div>
+
+    <div class="glass ad">
+      <iframe id="adFrame" src="https://games4fun.org/ads/banner.html" title="Advertisement" scrolling="no" loading="lazy"></iframe>
+    </div>
+
+    <div class="glass game-panel">
+      <iframe id="gameFrame" allowfullscreen></iframe>
+      <div class="controls">
+        <button onclick="goHome()">Home</button>
+        <button onclick="fullscreenGame()">Fullscreen</button>
+        <button onclick="openAboutBlank()">Open About:Blank</button>
+      </div>
+      <div class="notice">Game may not be available in your district.</div>
+    </div>
+
+    <div class="glass section">
+      <h2>Play More</h2>
+      <div id="playMore" class="play-more">
+        <div class="empty">Loading games...</div>
+      </div>
+    </div>
+
+    <div class="report">
+      <a href="https://forms.gle/SaXtgPeaHNVhe3oMA" target="_blank" rel="noopener noreferrer">Report Game</a>
+      &nbsp;•&nbsp;
+      <a href="/forum">Game not working? Forum</a>
+    </div>
+
+    <div class="footer">Eternal Arcade</div>
+  </div>
+
+  <script>
+    const GAME_DATA = "PCFET0NUWVBFIGh0bWw+CjwhLS0gVWx0aW1hdGUgR2FtZSBTdGFzaCBmaWxlLS0+IAo8IS0tIEZvciB0aGUgcmVndWxhcmx5IHVwZGF0aW5nIGRvYyBnbyB0byBodHRwczovL2RvY3MuZ29vZ2xlLmNvbS9kb2N1bWVudC9kLzFfRm1IM0JsU0JRSTdGR2dBUUw1OS1aUGU4ZUN4czM1d2VsNkpVeVZhRzhRLyAtLT4KPCEtLSBzaHh5ZGVyIC0tPgo8aHRtbCBsYW5nPSJlbi11cyI+CjxoZWFkPgogIDxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KICA8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11dGYtOCI+CiAgPHN0eWxlPgogICAgaHRtbCwKICAgIGJvZHkgewogICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjazsKICAgICAgd2lkdGg6IDEwMCU7CiAgICAgIGhlaWdodDogMTAwJTsKICAgICAgb3ZlcmZsb3c6IGhpZGRlbjsKICAgICAgcGFkZGluZzogMDsKICAgICAgbWFyZ2luOiAwOwogICAgfQogICAgYm9keSB7CiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTsKICAgIH0KICAgICN1bml0eS1iZyB7CiAgICAgIHBvc2l0aW9uOiBmaXhlZDsKICAgICAgaW5zZXQ6IDA7CiAgICAgIGJhY2tncm91bmQtaW1hZ2U6IHVybCgnaHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3NoYXlkZXJyci9wb3J0c3YyQG1haW4vZGFzaGlvL1RlbXBsYXRlRGF0YS9iZy5wbmcnKTsKICAgICAgYmFja2dyb3VuZC1wb3NpdGlvbjogY2VudGVyOwogICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogbm8tcmVwZWF0OwogICAgICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyOwogICAgICB6LWluZGV4OiAwOwogICAgfQogICAgI2dhbWVDb250YWluZXIgewogICAgICBwb3NpdGlvbjogZml4ZWQ7CiAgICAgIGluc2V0OiAwOwogICAgICBtYXJnaW46IDA7CiAgICAgIHBhZGRpbmc6IDA7CiAgICAgIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50ICFpbXBvcnRhbnQ7CiAgICAgIHotaW5kZXg6IDE7CiAgICB9CiAgICAjZ2FtZUNvbnRhaW5lciBjYW52YXMgewogICAgICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgICAgIGluc2V0OiAwOwogICAgICBtYXJnaW46IGF1dG87CiAgICB9CiAgICAjZ2FtZUNvbnRhaW5lciBjYW52YXNbZGF0YS1waXhlbC1hcnQ9InRydWUiXSB7CiAgICAgIGltYWdlLXJlbmRlcmluZzogb3B0aW1pemVTcGVlZDsKICAgICAgaW1hZ2UtcmVuZGVyaW5nOiAtd2Via2l0LWNyaXNwLWVkZ2VzOwogICAgICBpbWFnZS1yZW5kZXJpbmc6IC1tb3otY3Jpc3AtZWRnZXM7CiAgICAgIGltYWdlLXJlbmRlcmluZzogLW8tY3Jpc3AtZWRnZXM7CiAgICAgIGltYWdlLXJlbmRlcmluZzogY3Jpc3AtZWRnZXM7CiAgICAgIGltYWdlLXJlbmRlcmluZzogLXdlYmtpdC1vcHRpbWl6ZS1jb250cmFzdDsKICAgICAgaW1hZ2UtcmVuZGVyaW5nOiBvcHRpbWl6ZS1jb250cmFzdDsKICAgICAgaW1hZ2UtcmVuZGVyaW5nOiBwaXhlbGF0ZWQ7CiAgICAgIC1tcy1pbnRlcnBvbGF0aW9uLW1vZGU6IG5lYXJlc3QtbmVpZ2hib3I7CiAgICB9CiAgICAubG9hZGluZ091dCB7CiAgICAgIHdpZHRoOiAyNTBweDsKICAgICAgcG9zaXRpb246IGZpeGVkOwogICAgICBsZWZ0OiA1MCU7CiAgICAgIHRvcDogY2FsYyg1MCUgLSA4cHgpOwogICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlKTsKICAgICAgYm9yZGVyOiAycHggc29saWQgd2hpdGU7CiAgICAgIGhlaWdodDogMTRweDsKICAgICAgei1pbmRleDogMzsKICAgIH0KICAgIC5sb2dvLWludHJvIHsKICAgICAgcG9zaXRpb246IGZpeGVkOwogICAgICB0b3A6IDE2cHg7CiAgICAgIGxlZnQ6IDE2cHg7CiAgICAgIHdpZHRoOiAxMjBweDsKICAgICAgei1pbmRleDogMzsKICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7CiAgICB9CiAgICAubG9nby1oaWRkZW4gewogICAgICBkaXNwbGF5OiBub25lOwogICAgfQogICAgLmxvYWRpbmctaGlkZGVuIHsKICAgICAgZGlzcGxheTogbm9uZTsKICAgIH0KICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5PgogIDxkaXYgaWQ9InVuaXR5LWJnIj48L2Rpdj4KCiAgPGRpdiBpZD0iZ2FtZUNvbnRhaW5lciI+CiAgICA8aW1nIGlkPSJpbnRyby1sb2dvIiBzcmM9Imh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9naC9zaGF5ZGVycnIvcG9ydHN2MkBtYWluL2Rhc2hpby9UZW1wbGF0ZURhdGEvbG9nby5wbmciIGNsYXNzPSJsb2dvLWludHJvIj4KICAgIDxkaXYgaWQ9ImxvYWRpbmctYmFyIiBjbGFzcz0ibG9hZGluZ091dCI+PC9kaXY+CiAgICA8Y2FudmFzIGlkPSJ1bml0eS1jYW52YXMiIGRhdGEtcGl4ZWwtYXJ0PSIiPjwvY2FudmFzPgogICAgPHNjcmlwdCBzcmM9Imh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9naC9zaGF5ZGVycnIvcG9ydHN2MkBtYWluL2Rhc2hpby9CdWlsZC9UUEdfRGFzaFBhcnR5X1YwNS5sb2FkZXIuanMiPjwvc2NyaXB0PgogICAgPHNjcmlwdD4KICAgICAgdmFyIGNhbnZhcyA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoIiN1bml0eS1jYW52YXMiKTsKICAgICAgdmFyIGludHJvTG9nbyA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJpbnRyby1sb2dvIik7CiAgICAgIHZhciBsb2FkaW5nQmFyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImxvYWRpbmctYmFyIik7CgogICAgICB2YXIgZGF0YVBhcnRzID0gWwogICAgICAgICJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvZ2gvc2hheWRlcnJyL3BvcnRzdjJAbWFpbi9kYXNoaW8vQnVpbGQvVFBHX0Rhc2hQYXJ0eV9WMDUuZGF0YS51bml0eXdlYi5wYXJ0MCIsCiAgICAgICAgImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9naC9zaGF5ZGVycnIvcG9ydHN2MkBtYWluL2Rhc2hpby9CdWlsZC9UUEdfRGFzaFBhcnR5X1YwNS5kYXRhLnVuaXR5d2ViLnBhcnQxIiwKICAgICAgICAiaHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3NoYXlkZXJyci9wb3J0c3YyQG1haW4vZGFzaGlvL0J1aWxkL1RQR19EYXNoUGFydHlfVjA1LmRhdGEudW5pdHl3ZWIucGFydDIiLAogICAgICAgICJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvZ2gvc2hheWRlcnJyL3BvcnRzdjJAbWFpbi9kYXNoaW8vQnVpbGQvVFBHX0Rhc2hQYXJ0eV9WMDUuZGF0YS51bml0eXdlYi5wYXJ0MyIsCiAgICAgICAgImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9naC9zaGF5ZGVycnIvcG9ydHN2MkBtYWluL2Rhc2hpby9CdWlsZC9UUEdfRGFzaFBhcnR5X1YwNS5kYXRhLnVuaXR5d2ViLnBhcnQ0IiwKICAgICAgICAiaHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3NoYXlkZXJyci9wb3J0c3YyQG1haW4vZGFzaGlvL0J1aWxkL1RQR19EYXNoUGFydHlfVjA1LmRhdGEudW5pdHl3ZWIucGFydDUiCiAgICAgIF07CgogICAgICB2YXIgc2NhbGVUb0ZpdDsKICAgICAgdHJ5IHsKICAgICAgICBzY2FsZVRvRml0ID0gISFKU09OLnBhcnNlKCIiKTsKICAgICAgfSBjYXRjaCAoZSkgewogICAgICAgIHNjYWxlVG9GaXQgPSB0cnVlOwogICAgICB9CgogICAgICBmdW5jdGlvbiBwcm9ncmVzc0hhbmRsZXIocHJvZ3Jlc3MpIHsKICAgICAgICB2YXIgcGVyY2VudCA9IHByb2dyZXNzICogMTAwICsgJyUnOwogICAgICAgIGNhbnZhcy5zdHlsZS5iYWNrZ3JvdW5kID0gJ2xpbmVhci1ncmFkaWVudCh0byByaWdodCwgd2hpdGUsIHdoaXRlICcgKyBwZXJjZW50ICsgJywgdHJhbnNwYXJlbnQgJyArIHBlcmNlbnQgKyAnLCB0cmFuc3BhcmVudCkgbm8tcmVwZWF0IGNlbnRlcic7CiAgICAgICAgY2FudmFzLnN0eWxlLmJhY2tncm91bmRTaXplID0gJzEwMCUgMXJlbSc7CiAgICAgICAgY2FudmFzLnN0eWxlLndpZHRoID0gJzI1MHB4JzsKICAgICAgICBjYW52YXMuc3R5bGUucG9zaXRpb24gPSAnZml4ZWQnOwogICAgICAgIGNhbnZhcy5zdHlsZS5sZWZ0ID0gJzUwJSc7CiAgICAgICAgY2FudmFzLnN0eWxlLnRyYW5zZm9ybSA9ICd0cmFuc2xhdGUoLTUwJSknOwogICAgICB9CgogICAgICBmdW5jdGlvbiBvblJlc2l6ZSgpIHsKICAgICAgICB2YXIgY29udGFpbmVyID0gY2FudmFzLnBhcmVudEVsZW1lbnQ7CiAgICAgICAgdmFyIHc7CiAgICAgICAgdmFyIGg7CiAgICAgICAgaWYgKHNjYWxlVG9GaXQpIHsKICAgICAgICAgIHcgPSB3aW5kb3cuaW5uZXJXaWR0aDsKICAgICAgICAgIGggPSB3aW5kb3cuaW5uZXJIZWlnaHQ7CiAgICAgICAgICB2YXIgciA9IDEwODAgLyAxOTIwOwogICAgICAgICAgaWYgKHcgKiByID4gd2luZG93LmlubmVySGVpZ2h0KSB7CiAgICAgICAgICAgIHcgPSBNYXRoLm1pbih3LCBNYXRoLmNlaWwoaCAvIHIpKTsKICAgICAgICAgIH0KICAgICAgICAgIGggPSBNYXRoLmZsb29yKHcgKiByKTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgdyA9IDE5MjA7CiAgICAgICAgICBoID0gMTA4MDsKICAgICAgICB9CiAgICAgICAgY29udGFpbmVyLnN0eWxlLndpZHRoID0gY2FudmFzLnN0eWxlLndpZHRoID0gdyArICJweCI7CiAgICAgICAgY29udGFpbmVyLnN0eWxlLmhlaWdodCA9IGNhbnZhcy5zdHlsZS5oZWlnaHQgPSBoICsgInB4IjsKICAgICAgICBjb250YWluZXIuc3R5bGUudG9wID0gIjBweCI7CiAgICAgICAgY29udGFpbmVyLnN0eWxlLmxlZnQgPSAiMHB4IjsKICAgICAgfQoKICAgICAgYXN5bmMgZnVuY3Rpb24gbWVyZ2VEYXRhUGFydHMocGFydHMpIHsKICAgICAgICB2YXIgY2h1bmtzID0gW107CiAgICAgICAgdmFyIGxvYWRlZFBhcnRzID0gMDsKICAgICAgICB2YXIgdG90YWxQYXJ0cyA9IHBhcnRzLmxlbmd0aDsKICAgICAgICBmb3IgKHZhciBpID0gMDsgaSA8IHBhcnRzLmxlbmd0aDsgaSsrKSB7CiAgICAgICAgICB2YXIgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaChwYXJ0c1tpXSk7CiAgICAgICAgICB2YXIgYXJyYXlCdWZmZXIgPSBhd2FpdCByZXNwb25zZS5hcnJheUJ1ZmZlcigpOwogICAgICAgICAgY2h1bmtzLnB1c2goYXJyYXlCdWZmZXIpOwogICAgICAgICAgbG9hZGVkUGFydHMrKzsKICAgICAgICAgIHByb2dyZXNzSGFuZGxlcihsb2FkZWRQYXJ0cyAvIHRvdGFsUGFydHMgKiAwLjUpOwogICAgICAgIH0KICAgICAgICB2YXIgdG90YWxMZW5ndGggPSBjaHVua3MucmVkdWNlKGZ1bmN0aW9uKGFjYywgY2h1bmspIHsgcmV0dXJuIGFjYyArIGNodW5rLmJ5dGVMZW5ndGg7IH0sIDApOwogICAgICAgIHZhciBjb21iaW5lZCA9IG5ldyBVaW50OEFycmF5KHRvdGFsTGVuZ3RoKTsKICAgICAgICB2YXIgb2Zmc2V0ID0gMDsKICAgICAgICBmb3IgKHZhciBqID0gMDsgaiA8IGNodW5rcy5sZW5ndGg7IGorKykgewogICAgICAgICAgY29tYmluZWQuc2V0KG5ldyBVaW50OEFycmF5KGNodW5rc1tqXSksIG9mZnNldCk7CiAgICAgICAgICBvZmZzZXQgKz0gY2h1bmtzW2pdLmJ5dGVMZW5ndGg7CiAgICAgICAgfQogICAgICAgIHZhciBibG9iID0gbmV3IEJsb2IoW2NvbWJpbmVkXSwgeyB0eXBlOiAiYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtIiB9KTsKICAgICAgICByZXR1cm4gVVJMLmNyZWF0ZU9iamVjdFVSTChibG9iKTsKICAgICAgfQoKICAgICAgYXN5bmMgZnVuY3Rpb24gc3RhcnRHYW1lKCkgewogICAgICAgIHZhciBtZXJnZWREYXRhVXJsID0gYXdhaXQgbWVyZ2VEYXRhUGFydHMoZGF0YVBhcnRzKTsKICAgICAgICB2YXIgY29uZmlnID0gewogICAgICAgICAgZGF0YVVybDogbWVyZ2VkRGF0YVVybCwKICAgICAgICAgIGZyYW1ld29ya1VybDogImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9naC9zaGF5ZGVycnIvcG9ydHN2MkBtYWluL2Rhc2hpby9CdWlsZC9UUEdfRGFzaFBhcnR5X1YwNS5mcmFtZXdvcmsuanMudW5pdHl3ZWIiLAogICAgICAgICAgY29kZVVybDogImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9naC9zaGF5ZGVycnIvcG9ydHN2MkBtYWluL2Rhc2hpby9CdWlsZC9UUEdfRGFzaFBhcnR5X1YwNS53YXNtLnVuaXR5d2ViIiwKICAgICAgICAgIHN0cmVhbWluZ0Fzc2V0c1VybDogIlN0cmVhbWluZ0Fzc2V0cyIsCiAgICAgICAgICBjb21wYW55TmFtZTogIlJITSBJbnRlcmFjdGl2ZSIsCiAgICAgICAgICBwcm9kdWN0TmFtZTogIkRhc2ggUGFydHkiLAogICAgICAgICAgcHJvZHVjdFZlcnNpb246ICIxLjMuNiIKICAgICAgICB9OwogICAgICAgIGNyZWF0ZVVuaXR5SW5zdGFuY2UoY2FudmFzLCBjb25maWcsIGZ1bmN0aW9uKHByb2dyZXNzKSB7CiAgICAgICAgICBwcm9ncmVzc0hhbmRsZXIoMC41ICsgcHJvZ3Jlc3MgKiAwLjUpOwogICAgICAgIH0pLnRoZW4oZnVuY3Rpb24gKGluc3RhbmNlKSB7CiAgICAgICAgICBjYW52YXMgPSBpbnN0YW5jZS5Nb2R1bGUuY2FudmFzOwogICAgICAgICAgb25SZXNpemUoKTsKICAgICAgICAgIFVSTC5yZXZva2VPYmplY3RVUkwobWVyZ2VkRGF0YVVybCk7CiAgICAgICAgICBpbnRyb0xvZ28uY2xhc3NMaXN0LmFkZCgibG9nby1oaWRkZW4iKTsKICAgICAgICAgIGxvYWRpbmdCYXIuY2xhc3NMaXN0LmFkZCgibG9hZGluZy1oaWRkZW4iKTsKICAgICAgICAgIGNhbnZhcy5zdHlsZS5iYWNrZ3JvdW5kID0gInRyYW5zcGFyZW50IjsKICAgICAgICB9KTsKICAgICAgfQoKICAgICAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoJ3Jlc2l6ZScsIG9uUmVzaXplKTsKICAgICAgb25SZXNpemUoKTsKICAgICAgc3RhcnRHYW1lKCk7CiAgICA8L3NjcmlwdD4KICA8L2Rpdj4KPC9ib2R5Pgo8L2h0bWw+Cg==";
+    const CURRENT_GAME = "cldashio.html";
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function decodeGame() {
+      const binary = atob(GAME_DATA);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    }
+
+    const gameHTML = decodeGame();
+
+    function loadGame() {
+      document.getElementById("gameFrame").srcdoc = gameHTML;
+    }
+
+    function goHome() {
+      window.location.href = "../";
+    }
+
+    function fullscreenGame() {
+      const frame = document.getElementById("gameFrame");
+      if (frame.requestFullscreen) {
+        frame.requestFullscreen();
+      } else if (frame.webkitRequestFullscreen) {
+        frame.webkitRequestFullscreen();
+      }
+    }
+
+    function openAboutBlank() {
+      const win = window.open("about:blank", "_blank");
+      if (!win) {
+        alert("Your browser blocked the About:Blank window.");
+        return;
+      }
+      win.document.open();
+      win.document.write(gameHTML);
+      win.document.close();
+    }
+
+    function createParticles() {
+      const container = document.getElementById("particles");
+      for (let i = 0; i < 55; i++) {
+        const particle = document.createElement("div");
+        particle.className = "particle";
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.animationDuration = (8 + Math.random() * 16) + "s";
+        particle.style.animationDelay = (-Math.random() * 20) + "s";
+        particle.style.opacity = (.2 + Math.random() * .8);
+        container.appendChild(particle);
+      }
+    }
+
+    function cleanFilename(name) {
+      return name
+        .replace(/\.html$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function cleanTitle(title) {
+      return title
+        .replace(/\s*-\s*(Eternal Arcade|Voidware)\s*$/i, "")
+        .trim();
+    }
+
+    async function loadPlayMore() {
+      const container = document.getElementById("playMore");
+      try {
+        const response = await fetch("https://api.github.com/repos/voidware1/Eternal-Arcade/contents/play?ref=main");
+        if (!response.ok) throw new Error("GitHub API request failed (" + response.status + ")");
+
+        const files = await response.json();
+        const games = files.filter(file =>
+          file.type === "file" &&
+          /\.html$/i.test(file.name) &&
+          file.name.toLowerCase() !== "index.html" &&
+          file.name.toLowerCase() !== CURRENT_GAME
+        );
+
+        if (!games.length) {
+          container.innerHTML = '<div class="empty">No other games found.</div>';
+          return;
+        }
+
+        container.innerHTML = "";
+
+        for (const file of games.slice(0, 36)) {
+          const card = document.createElement("a");
+          card.className = "game-card";
+          card.href = "./" + encodeURIComponent(file.name);
+
+          // Start with cleaned filename as fallback
+          card.innerHTML = `
+            <div class="game-card-title">${escapeHTML(cleanFilename(file.name))}</div>
+            <div class="game-card-file">${escapeHTML(file.name)}</div>
+          `;
+
+          // Try to get the real title and clean it
+          try {
+            if (file.download_url) {
+              const gameResponse = await fetch(file.download_url);
+              if (gameResponse.ok) {
+                const source = await gameResponse.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(source, "text/html");
+                let title = doc.title.trim();
+                title = cleanTitle(title);
+                if (title) {
+                  card.querySelector(".game-card-title").textContent = title;
+                }
+              }
+            }
+          } catch (error) {
+            // Keep the filename fallback
+          }
+
+          container.appendChild(card);
+        }
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = '<div class="empty">Unable to load games (API error or rate limit).</div>';
+      }
+    }
+
+    const savedTheme = localStorage.getItem("eternalArcadeTheme");
+    if (savedTheme) {
+      try {
+        const theme = JSON.parse(savedTheme);
+        if (theme && typeof theme.hue === "number") {
+          const hue = theme.hue;
+          const saturation = theme.saturation ?? 80;
+          const brightness = theme.brightness ?? 65;
+
+          document.documentElement.style.setProperty(
+            "--accent",
+            `hsl(${hue}, ${saturation}%, ${brightness}%)`
+          );
+
+          const light = Math.min(90, brightness + 20);
+          const dark = Math.max(20, brightness - 25);
+
+          document.documentElement.style.setProperty(
+            "--accent-light",
+            `hsl(${hue}, ${saturation}%, ${light}%)`
+          );
+          document.documentElement.style.setProperty(
+            "--accent-dark",
+            `hsl(${hue}, ${saturation}%, ${dark}%)`
+          );
+          document.documentElement.style.setProperty(
+            "--accent-rgb",
+            hslToRgb(hue, saturation, brightness)
+          );
+        }
+      } catch (error) {}
+    }
+
+    function hslToRgb(h, s, l) {
+      s /= 100;
+      l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n =>
+        l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      return [
+        Math.round(255 * f(0)),
+        Math.round(255 * f(8)),
+        Math.round(255 * f(4))
+      ].join(",");
+    }
+
+    const adFrame = document.getElementById("adFrame");
+    window.addEventListener("message", event => {
+      if (event.source !== adFrame.contentWindow) return;
+      const data = event.data;
+      if (!data || data.type !== "eternal-arcade-ad-resize") return;
+      const height = Math.max(50, Math.min(500, Number(data.height) || 90));
+      adFrame.style.height = height + "px";
+    });
+
+    adFrame.addEventListener("load", () => {
+      try {
+        adFrame.contentWindow.postMessage({ type: "eternal-arcade-ad-request-size" }, "*");
+      } catch (error) {}
+    });
+
+    setTimeout(() => {
+      try {
+        adFrame.contentWindow.postMessage({ type: "eternal-arcade-ad-request-size" }, "*");
+      } catch (error) {}
+    }, 1200);
+
+    createParticles();
+    loadGame();
+    loadPlayMore();
+  </script>
+</body>
+</html>
