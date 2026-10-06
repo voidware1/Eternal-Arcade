@@ -2183,6 +2183,23 @@ function cleanFileName(name) {
 
 
 /* =========================================================
+   CLEAN TITLE
+   Removes " - Eternal Arcade" / " - Voidware"
+========================================================= */
+
+function cleanTitle(title) {
+
+    return title
+        .replace(
+            /\s*-\s*(Eternal Arcade|Voidware)\s*$/i,
+            ""
+        )
+        .trim();
+
+}
+
+
+/* =========================================================
    GET GAME INFO
    DETECTS TITLE FROM THE ACTUAL GAME HTML
 ========================================================= */
@@ -2238,18 +2255,22 @@ async function getGameInfo(file) {
 
         if (pageTitle) {
 
-            const detectedTitle =
+            let detectedTitle =
                 pageTitle.textContent.trim();
+
+
+            // Strip the suffix so we only show the clean name
+            detectedTitle = cleanTitle(detectedTitle);
 
 
             if (
                 detectedTitle &&
                 detectedTitle.toLowerCase() !== "game" &&
-                detectedTitle.toLowerCase() !== "untitled"
+                detectedTitle.toLowerCase() !== "untitled" &&
+                detectedTitle.toLowerCase() !== "eternal arcade"
             ) {
 
-                title =
-                    detectedTitle;
+                title = detectedTitle;
 
             }
 
@@ -2533,4 +2554,4 @@ loadGames();
 </script>
 
 </body>
-</html>
+</html> 
