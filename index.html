@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Eternal Arcade</title>
+
+<meta name="eternal-arcade" content="true">
+<meta name="eternal-theme" content="inherit">
 
 <style>
 * {
@@ -18,15 +20,93 @@ html {
     scroll-behavior: smooth;
 }
 
+:root {
+    --accent: #a855f7;
+    --accent-rgb: 168, 85, 247;
+    --accent-light: #c084fc;
+    --accent-dark: #7c3aed;
+
+    --bg: #000;
+    --panel: rgba(255,255,255,.035);
+
+    --accent-glow: rgba(var(--accent-rgb), .35);
+    --accent-strong: rgba(var(--accent-rgb), .8);
+}
+
+/* =========================
+   BODY
+========================= */
+
 body {
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
 
-    background: #000;
+    background: var(--bg);
     color: white;
 
     font-family: Arial, sans-serif;
+
+    transition:
+        background .35s ease,
+        color .35s ease;
+}
+
+
+/* =========================
+   GALAXY BACKGROUND
+========================= */
+
+body.galaxy-mode {
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(var(--accent-rgb), .25),
+            transparent 40%
+        ),
+        #000;
+}
+
+
+/* =========================
+   NEUTRAL BACKGROUND
+========================= */
+
+body.neutral-mode {
+    background:
+        radial-gradient(
+            circle at 50% -20%,
+            rgba(var(--accent-rgb), .08),
+            transparent 45%
+        ),
+        #090909;
+}
+
+
+/* =========================
+   MATRIX CANVAS
+========================= */
+
+#matrixCanvas {
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    opacity: 0;
+
+    transition:
+        opacity .35s ease;
+}
+
+body.matrix-mode #matrixCanvas {
+    opacity: .65;
 }
 
 
@@ -36,12 +116,25 @@ body {
 
 #particles {
     position: fixed;
+
     inset: 0;
 
     overflow: hidden;
     pointer-events: none;
 
     z-index: 0;
+
+    transition:
+        opacity .35s ease;
+}
+
+body.matrix-mode #particles,
+body.neutral-mode #particles {
+    opacity: .18;
+}
+
+body.galaxy-mode #particles {
+    opacity: 1;
 }
 
 .particle {
@@ -52,15 +145,16 @@ body {
 
     border-radius: 50%;
 
-    background: #a855f7;
+    background: var(--accent);
 
     box-shadow:
-        0 0 8px #a855f7,
-        0 0 16px #7c3aed;
+        0 0 8px var(--accent),
+        0 0 16px var(--accent-dark);
 
     opacity: 0;
 
-    animation: floatUp linear infinite;
+    animation:
+        floatUp linear infinite;
 }
 
 @keyframes floatUp {
@@ -92,6 +186,7 @@ body {
 
 .container {
     position: relative;
+
     z-index: 2;
 
     min-height: 100vh;
@@ -117,16 +212,20 @@ body {
 
     border-radius: 50%;
 
-    background: #a855f7;
+    background: var(--accent);
 
     box-shadow:
-        0 0 20px rgba(168, 85, 247, .8),
-        0 0 60px rgba(124, 58, 237, .55),
-        0 0 110px rgba(124, 58, 237, .25);
+        0 0 20px rgba(var(--accent-rgb), .8),
+        0 0 60px rgba(var(--accent-rgb), .55),
+        0 0 110px rgba(var(--accent-rgb), .25);
 
     margin-bottom: 25px;
 
     overflow: hidden;
+
+    transition:
+        background .3s ease,
+        box-shadow .3s ease;
 }
 
 .moon::after {
@@ -158,10 +257,340 @@ body {
 
     text-align: center;
 
-    margin-bottom: 32px;
+    margin-bottom: 22px;
 
     text-shadow:
-        0 0 15px rgba(168, 85, 247, .35);
+        0 0 15px rgba(var(--accent-rgb), .35);
+}
+
+
+/* =========================
+   THEME BUTTON
+========================= */
+
+.theme-button {
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    z-index: 20;
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    background:
+        rgba(255,255,255,.045);
+
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.35);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.theme-button:hover {
+    transform: scale(1.08);
+
+    border-color:
+        var(--accent);
+
+    box-shadow:
+        0 0 25px rgba(var(--accent-rgb), .25);
+}
+
+
+/* =========================
+   THEME PANEL
+========================= */
+
+.theme-panel {
+    position: fixed;
+
+    top: 76px;
+    right: 20px;
+
+    width: min(390px, calc(100vw - 40px));
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(12,12,15,.82);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.5);
+
+    z-index: 19;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(-10px)
+        scale(.97);
+
+    transition:
+        opacity .2s ease,
+        visibility .2s ease,
+        transform .2s ease;
+}
+
+.theme-panel.open {
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+.theme-title {
+    font-size: 18px;
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================
+   MODE BUTTONS
+========================= */
+
+.theme-modes {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.mode-button {
+    min-height: 44px;
+
+    border-radius: 12px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    background:
+        rgba(255,255,255,.035);
+
+    color:
+        rgba(255,255,255,.7);
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition:
+        .2s ease;
+}
+
+.mode-button:hover {
+    border-color:
+        rgba(var(--accent-rgb), .5);
+
+    color: white;
+}
+
+.mode-button.active {
+    background:
+        rgba(var(--accent-rgb), .16);
+
+    border-color:
+        rgba(var(--accent-rgb), .65);
+
+    color: white;
+
+    box-shadow:
+        0 0 18px rgba(var(--accent-rgb), .12);
+}
+
+
+/* =========================
+   COLOR PICKER
+========================= */
+
+.color-label {
+    font-size: 13px;
+
+    color:
+        rgba(255,255,255,.55);
+
+    margin-bottom: 8px;
+}
+
+.color-picker {
+    position: relative;
+
+    width: 100%;
+    height: 150px;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    cursor: crosshair;
+
+    background:
+        linear-gradient(
+            to top,
+            #000,
+            transparent
+        ),
+        linear-gradient(
+            to right,
+            #fff,
+            hsl(
+                var(--picker-hue),
+                100%,
+                50%
+            )
+        );
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    box-shadow:
+        inset 0 0 25px rgba(0,0,0,.2);
+}
+
+.color-picker-point {
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    border:
+        2px solid white;
+
+    box-shadow:
+        0 0 0 2px rgba(0,0,0,.35),
+        0 0 12px rgba(255,255,255,.7);
+
+    transform:
+        translate(-50%, 50%);
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   HUE SLIDER
+========================= */
+
+.hue-slider {
+    position: relative;
+
+    height: 18px;
+
+    margin-top: 12px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff0000,
+            #ffff00,
+            #00ff00,
+            #00ffff,
+            #0000ff,
+            #ff00ff,
+            #ff0000
+        );
+
+    cursor: pointer;
+
+    border:
+        1px solid rgba(255,255,255,.12);
+}
+
+.hue-point {
+    position: absolute;
+
+    top: 50%;
+
+    width: 20px;
+    height: 20px;
+
+    border-radius: 50%;
+
+    border:
+        2px solid white;
+
+    box-shadow:
+        0 0 0 2px rgba(0,0,0,.35);
+
+    transform:
+        translate(-50%, -50%);
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   PRESETS
+========================= */
+
+.presets {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    gap: 8px;
+
+    margin-top: 15px;
+}
+
+.preset {
+    height: 30px;
+
+    border-radius: 9px;
+
+    border:
+        1px solid rgba(255,255,255,.15);
+
+    cursor: pointer;
+
+    transition:
+        transform .15s ease;
+}
+
+.preset:hover {
+    transform: scale(1.08);
 }
 
 
@@ -186,10 +615,11 @@ body {
         linear-gradient(
             135deg,
             rgba(255,255,255,.035),
-            rgba(168,85,247,.025)
+            rgba(var(--accent-rgb),.025)
         );
 
-    border: 1px solid rgba(255,255,255,.09);
+    border:
+        1px solid rgba(255,255,255,.09);
 
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
@@ -198,7 +628,8 @@ body {
         inset 0 1px 1px rgba(255,255,255,.08),
         0 10px 40px rgba(0,0,0,.35);
 
-    transition: .25s;
+    transition:
+        .25s;
 
     z-index: 5;
 }
@@ -224,20 +655,20 @@ body {
 }
 
 .search:focus-within {
-
     border-color:
-        rgba(168,85,247,.5);
+        rgba(var(--accent-rgb),.5);
 
     box-shadow:
         inset 0 1px 1px rgba(255,255,255,.1),
-        0 0 30px rgba(168,85,247,.15),
+        0 0 30px rgba(var(--accent-rgb),.15),
         0 10px 40px rgba(0,0,0,.5);
 }
 
 .search-icon {
     font-size: 19px;
 
-    color: #a855f7;
+    color:
+        var(--accent);
 
     margin-right: 12px;
 }
@@ -256,7 +687,8 @@ body {
 }
 
 .search input::placeholder {
-    color: rgba(255,255,255,.42);
+    color:
+        rgba(255,255,255,.42);
 }
 
 
@@ -265,14 +697,12 @@ body {
 ========================= */
 
 .play-section {
-
     width: min(1200px, 92vw);
 
     margin-top: 55px;
 }
 
 .section-title {
-
     font-size: 25px;
 
     font-weight: 700;
@@ -288,7 +718,6 @@ body {
 ========================= */
 
 .game-grid {
-
     display: grid;
 
     grid-template-columns:
@@ -306,7 +735,6 @@ body {
 ========================= */
 
 .game-card {
-
     position: relative;
 
     aspect-ratio: 1 / 1;
@@ -324,7 +752,7 @@ body {
     background:
         linear-gradient(
             135deg,
-            rgba(168,85,247,.045),
+            rgba(var(--accent-rgb),.045),
             rgba(255,255,255,.018)
         );
 
@@ -346,16 +774,16 @@ body {
 }
 
 .game-card:hover {
-
     transform:
         translateY(-6px)
         scale(1.025);
 
     border-color:
-        rgba(168,85,247,.55);
+        rgba(var(--accent-rgb),.55);
 
     box-shadow:
-        0 15px 45px rgba(124,58,237,.25);
+        0 15px 45px
+        rgba(var(--accent-rgb),.25);
 }
 
 
@@ -364,7 +792,6 @@ body {
 ========================= */
 
 .game-name {
-
     position: absolute;
 
     inset: 0;
@@ -387,7 +814,8 @@ body {
     line-height: 1.25;
 
     text-shadow:
-        0 0 12px rgba(168,85,247,.8),
+        0 0 12px
+        rgba(var(--accent-rgb),.8),
         0 2px 8px #000;
 
     transition:
@@ -398,12 +826,12 @@ body {
 }
 
 .game-card:hover .game-name {
-
     transform:
         scale(1.05);
 
     text-shadow:
-        0 0 18px rgba(168,85,247,1),
+        0 0 18px
+        rgba(var(--accent-rgb),1),
         0 2px 8px #000;
 }
 
@@ -413,20 +841,19 @@ body {
 ========================= */
 
 .loading {
-
     width: 100%;
 
     text-align: center;
 
     padding: 50px 20px;
 
-    color: rgba(255,255,255,.45);
+    color:
+        rgba(255,255,255,.45);
 
     font-size: 15px;
 }
 
 .loading::after {
-
     content: "";
 
     display: block;
@@ -442,7 +869,7 @@ body {
         2px solid rgba(255,255,255,.12);
 
     border-top-color:
-        #a855f7;
+        var(--accent);
 
     animation:
         spin .8s linear infinite;
@@ -462,7 +889,6 @@ body {
 ========================= */
 
 .empty {
-
     width: 100%;
 
     text-align: center;
@@ -479,7 +905,6 @@ body {
 ========================= */
 
 .error {
-
     width: 100%;
 
     padding: 20px;
@@ -487,10 +912,11 @@ body {
     border-radius: 15px;
 
     background:
-        rgba(168,85,247,.04);
+        rgba(var(--accent-rgb),.04);
 
     border:
-        1px solid rgba(168,85,247,.12);
+        1px solid
+        rgba(var(--accent-rgb),.12);
 
     color:
         rgba(255,255,255,.55);
@@ -533,7 +959,6 @@ body {
     }
 
     .game-grid {
-
         grid-template-columns:
             repeat(
                 2,
@@ -546,12 +971,27 @@ body {
     .game-name {
         font-size: 16px;
     }
+
+    .theme-panel {
+        top: 75px;
+        right: 10px;
+        width: calc(100vw - 20px);
+    }
+
+    .theme-modes {
+        grid-template-columns:
+            1fr;
+    }
+
+    .presets {
+        grid-template-columns:
+            repeat(4, 1fr);
+    }
 }
 
 @media(min-width: 601px) and (max-width: 900px) {
 
     .game-grid {
-
         grid-template-columns:
             repeat(
                 3,
@@ -566,12 +1006,178 @@ body {
 
 <body>
 
+<!-- =========================
+     BACKGROUND EFFECTS
+========================= -->
+
+<canvas id="matrixCanvas"></canvas>
+
 <div id="particles"></div>
 
+
+<!-- =========================
+     THEME BUTTON
+========================= -->
+
+<button
+    id="themeButton"
+    class="theme-button"
+    aria-label="Open theme settings"
+>
+    🎨
+</button>
+
+
+<!-- =========================
+     THEME PANEL
+========================= -->
+
+<div
+    id="themePanel"
+    class="theme-panel"
+>
+
+    <div class="theme-title">
+        Theme
+    </div>
+
+
+    <div class="theme-modes">
+
+        <button
+            class="mode-button active"
+            data-mode="galaxy"
+        >
+            🌌 Galaxy
+        </button>
+
+        <button
+            class="mode-button"
+            data-mode="matrix"
+        >
+            🟩 Matrix
+        </button>
+
+        <button
+            class="mode-button"
+            data-mode="neutral"
+        >
+            ⚪ Neutral
+        </button>
+
+    </div>
+
+
+    <div class="color-label">
+        Choose color
+    </div>
+
+
+    <div
+        id="colorPicker"
+        class="color-picker"
+        style="--picker-hue:275"
+    >
+
+        <div
+            id="colorPickerPoint"
+            class="color-picker-point"
+        ></div>
+
+    </div>
+
+
+    <div
+        id="hueSlider"
+        class="hue-slider"
+    >
+
+        <div
+            id="huePoint"
+            class="hue-point"
+        ></div>
+
+    </div>
+
+
+    <div class="presets">
+
+        <button
+            class="preset"
+            data-hue="275"
+            data-saturation="80"
+            data-brightness="65"
+            style="background:#a855f7"
+            aria-label="Purple"
+        ></button>
+
+        <button
+            class="preset"
+            data-hue="220"
+            data-saturation="85"
+            data-brightness="65"
+            style="background:#3b82f6"
+            aria-label="Blue"
+        ></button>
+
+        <button
+            class="preset"
+            data-hue="145"
+            data-saturation="75"
+            data-brightness="60"
+            style="background:#22c55e"
+            aria-label="Green"
+        ></button>
+
+        <button
+            class="preset"
+            data-hue="330"
+            data-saturation="80"
+            data-brightness="68"
+            style="background:#ec4899"
+            aria-label="Pink"
+        ></button>
+
+        <button
+            class="preset"
+            data-hue="25"
+            data-saturation="90"
+            data-brightness="65"
+            style="background:#f97316"
+            aria-label="Orange"
+        ></button>
+
+        <button
+            class="preset"
+            data-hue="0"
+            data-saturation="85"
+            data-brightness="62"
+            style="background:#ef4444"
+            aria-label="Red"
+        ></button>
+
+        <button
+            class="preset"
+            data-hue="185"
+            data-saturation="80"
+            data-brightness="65"
+            style="background:#06b6d4"
+            aria-label="Cyan"
+        ></button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
 
 <div class="container">
 
     <div class="moon"></div>
+
 
     <h1 class="title">
         Eternal Arcade
@@ -643,6 +1249,30 @@ const gameGrid =
 const searchInput =
     document.getElementById("searchInput");
 
+const themeButton =
+    document.getElementById("themeButton");
+
+const themePanel =
+    document.getElementById("themePanel");
+
+const colorPicker =
+    document.getElementById("colorPicker");
+
+const colorPickerPoint =
+    document.getElementById("colorPickerPoint");
+
+const hueSlider =
+    document.getElementById("hueSlider");
+
+const huePoint =
+    document.getElementById("huePoint");
+
+const matrixCanvas =
+    document.getElementById("matrixCanvas");
+
+const matrixContext =
+    matrixCanvas.getContext("2d");
+
 
 /* =========================================================
    GAME STORAGE
@@ -652,40 +1282,877 @@ let games = [];
 
 
 /* =========================================================
+   THEME STORAGE
+========================================================= */
+
+const THEME_STORAGE_KEY =
+    "eternalArcadeTheme";
+
+
+let theme = {
+
+    mode: "galaxy",
+
+    hue: 275,
+
+    saturation: 80,
+
+    brightness: 65
+
+};
+
+
+/* =========================================================
+   LOAD SAVED THEME
+========================================================= */
+
+try {
+
+    const savedTheme =
+        localStorage.getItem(
+            THEME_STORAGE_KEY
+        );
+
+    if (savedTheme) {
+
+        const parsed =
+            JSON.parse(savedTheme);
+
+        if (parsed && typeof parsed === "object") {
+
+            theme = {
+                ...theme,
+                ...parsed
+            };
+
+        }
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "Could not load saved theme.",
+        error
+    );
+
+}
+
+
+/* =========================================================
+   HSL TO RGB
+========================================================= */
+
+function hslToRgb(
+    h,
+    s,
+    l
+) {
+
+    s /= 100;
+    l /= 100;
+
+    const k =
+        n =>
+            (n + h / 30) % 12;
+
+    const a =
+        s *
+        Math.min(
+            l,
+            1 - l
+        );
+
+    const f =
+        n =>
+            l -
+            a *
+            Math.max(
+                -1,
+                Math.min(
+                    k(n) - 3,
+                    Math.min(
+                        9 - k(n),
+                        1
+                    )
+                )
+            );
+
+    return [
+
+        Math.round(
+            255 * f(0)
+        ),
+
+        Math.round(
+            255 * f(8)
+        ),
+
+        Math.round(
+            255 * f(4)
+        )
+
+    ];
+
+}
+
+
+/* =========================================================
+   SAVE THEME
+========================================================= */
+
+function saveTheme() {
+
+    try {
+
+        localStorage.setItem(
+            THEME_STORAGE_KEY,
+            JSON.stringify(theme)
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Could not save theme.",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   APPLY THEME
+========================================================= */
+
+function applyTheme() {
+
+    const rgb =
+        hslToRgb(
+            theme.hue,
+            theme.saturation,
+            theme.brightness
+        );
+
+    const rgbString =
+        rgb.join(", ");
+
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent-rgb",
+            rgbString
+        );
+
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent",
+            `hsl(${theme.hue}, ${theme.saturation}%, ${theme.brightness}%)`
+        );
+
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent-light",
+            `hsl(${theme.hue}, ${Math.min(theme.saturation, 100)}%, ${Math.min(theme.brightness + 18, 95)}%)`
+        );
+
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent-dark",
+            `hsl(${theme.hue}, ${theme.saturation}%, ${Math.max(theme.brightness - 18, 15)}%)`
+        );
+
+
+    document.body.classList.toggle(
+        "galaxy-mode",
+        theme.mode === "galaxy"
+    );
+
+    document.body.classList.toggle(
+        "matrix-mode",
+        theme.mode === "matrix"
+    );
+
+    document.body.classList.toggle(
+        "neutral-mode",
+        theme.mode === "neutral"
+    );
+
+
+    /* =========================
+       COLOR PICKER
+    ========================= */
+
+    colorPicker.style
+        .setProperty(
+            "--picker-hue",
+            theme.hue
+        );
+
+
+    const pickerX =
+        theme.saturation;
+
+    const pickerY =
+        100 - theme.brightness;
+
+
+    colorPickerPoint.style.left =
+        pickerX + "%";
+
+    colorPickerPoint.style.top =
+        pickerY + "%";
+
+
+    /* =========================
+       HUE SLIDER
+    ========================= */
+
+    huePoint.style.left =
+        (theme.hue / 360 * 100) + "%";
+
+
+    /* =========================
+       ACTIVE MODE
+    ========================= */
+
+    document
+        .querySelectorAll(".mode-button")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.mode === theme.mode
+            );
+
+        });
+
+
+    saveTheme();
+
+
+    /* =========================
+       MATRIX
+    ========================= */
+
+    if (theme.mode === "matrix") {
+
+        startMatrix();
+
+    } else {
+
+        stopMatrix();
+
+    }
+
+}
+
+
+/* =========================================================
    PARTICLES
 ========================================================= */
 
 const particles =
     document.getElementById("particles");
 
+
 for (let i = 0; i < 70; i++) {
 
     const particle =
         document.createElement("div");
 
+
     particle.className =
         "particle";
+
 
     particle.style.left =
         Math.random() * 100 + "vw";
 
+
     particle.style.animationDuration =
         (8 + Math.random() * 15) + "s";
+
 
     particle.style.animationDelay =
         (-Math.random() * 20) + "s";
 
+
     const size =
         1 + Math.random() * 3;
+
 
     particle.style.width =
         size + "px";
 
+
     particle.style.height =
         size + "px";
 
-    particles.appendChild(particle);
+
+    particles.appendChild(
+        particle
+    );
+
 }
+
+
+/* =========================================================
+   MATRIX ENGINE
+========================================================= */
+
+let matrixAnimation = null;
+
+let matrixColumns = [];
+
+let matrixFontSize = 16;
+
+let matrixRunning = false;
+
+
+const matrixCharacters =
+    "アカサタナハマヤラワ" +
+    "ガザダバパ" +
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+    "0123456789" +
+    "$#@%&*+=<>";
+
+
+function resizeMatrix() {
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+
+    matrixCanvas.width =
+        window.innerWidth * dpr;
+
+    matrixCanvas.height =
+        window.innerHeight * dpr;
+
+
+    matrixCanvas.style.width =
+        window.innerWidth + "px";
+
+    matrixCanvas.style.height =
+        window.innerHeight + "px";
+
+
+    matrixContext.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    const columnCount =
+        Math.ceil(
+            window.innerWidth /
+            matrixFontSize
+        );
+
+
+    matrixColumns =
+        new Array(columnCount);
+
+
+    for (
+        let i = 0;
+        i < columnCount;
+        i++
+    ) {
+
+        matrixColumns[i] =
+            Math.random() *
+            -100;
+
+    }
+
+}
+
+
+function drawMatrix() {
+
+    if (!matrixRunning) {
+
+        return;
+
+    }
+
+
+    const width =
+        window.innerWidth;
+
+    const height =
+        window.innerHeight;
+
+
+    /*
+     * Slightly transparent background
+     * creates the trailing effect.
+     */
+
+    matrixContext.fillStyle =
+        "rgba(0, 0, 0, 0.075)";
+
+
+    matrixContext.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    const rgb =
+        hslToRgb(
+            theme.hue,
+            theme.saturation,
+            theme.brightness
+        );
+
+
+    /*
+     * Main Matrix text.
+     */
+
+    matrixContext.font =
+        matrixFontSize +
+        "px monospace";
+
+
+    for (
+        let i = 0;
+        i < matrixColumns.length;
+        i++
+    ) {
+
+        const character =
+            matrixCharacters[
+                Math.floor(
+                    Math.random() *
+                    matrixCharacters.length
+                )
+            ];
+
+
+        const x =
+            i * matrixFontSize;
+
+
+        const y =
+            matrixColumns[i] *
+            matrixFontSize;
+
+
+        /*
+         * Slightly brighter leading
+         * characters.
+         */
+
+        const alpha =
+            Math.random() > .88
+                ? .95
+                : .55;
+
+
+        matrixContext.fillStyle =
+            `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+
+
+        matrixContext.fillText(
+            character,
+            x,
+            y
+        );
+
+
+        /*
+         * Randomly reset a column
+         * after it reaches the bottom.
+         */
+
+        if (
+            y > height &&
+            Math.random() > .975
+        ) {
+
+            matrixColumns[i] =
+                Math.random() * -20;
+
+        }
+
+
+        matrixColumns[i] +=
+            0.45 +
+            Math.random() * 0.35;
+
+    }
+
+
+    matrixAnimation =
+        requestAnimationFrame(
+            drawMatrix
+        );
+
+}
+
+
+function startMatrix() {
+
+    matrixRunning = true;
+
+
+    resizeMatrix();
+
+
+    if (matrixAnimation) {
+
+        cancelAnimationFrame(
+            matrixAnimation
+        );
+
+    }
+
+
+    /*
+     * Clear canvas before starting.
+     */
+
+    matrixContext.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+
+    drawMatrix();
+
+}
+
+
+function stopMatrix() {
+
+    matrixRunning = false;
+
+
+    if (matrixAnimation) {
+
+        cancelAnimationFrame(
+            matrixAnimation
+        );
+
+        matrixAnimation = null;
+
+    }
+
+
+    matrixContext.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+}
+
+
+/* =========================================================
+   MATRIX RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (matrixRunning) {
+
+            resizeMatrix();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   THEME PANEL
+========================================================= */
+
+themeButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        themePanel.classList.toggle(
+            "open"
+        );
+
+    }
+);
+
+
+/*
+ * Prevent clicks inside the panel
+ * from closing it.
+ */
+
+themePanel.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+    }
+);
+
+
+/*
+ * Click outside closes panel.
+ */
+
+document.addEventListener(
+    "click",
+    () => {
+
+        themePanel.classList.remove(
+            "open"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MODE BUTTONS
+========================================================= */
+
+document
+    .querySelectorAll(".mode-button")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                theme.mode =
+                    button.dataset.mode;
+
+                applyTheme();
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   COLOR PICKER
+========================================================= */
+
+function updateColorFromPicker(
+    event
+) {
+
+    const rect =
+        colorPicker.getBoundingClientRect();
+
+
+    let x =
+        event.clientX -
+        rect.left;
+
+
+    let y =
+        event.clientY -
+        rect.top;
+
+
+    x =
+        Math.max(
+            0,
+            Math.min(
+                rect.width,
+                x
+            )
+        );
+
+
+    y =
+        Math.max(
+            0,
+            Math.min(
+                rect.height,
+                y
+            )
+        );
+
+
+    theme.saturation =
+        (x / rect.width) * 100;
+
+
+    theme.brightness =
+        100 -
+        (y / rect.height) * 100;
+
+
+    applyTheme();
+
+}
+
+
+colorPicker.addEventListener(
+    "pointerdown",
+    event => {
+
+        colorPicker.setPointerCapture(
+            event.pointerId
+        );
+
+        updateColorFromPicker(
+            event
+        );
+
+    }
+);
+
+
+colorPicker.addEventListener(
+    "pointermove",
+    event => {
+
+        if (
+            event.buttons &
+            1
+        ) {
+
+            updateColorFromPicker(
+                event
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   HUE SLIDER
+========================================================= */
+
+function updateHue(
+    event
+) {
+
+    const rect =
+        hueSlider.getBoundingClientRect();
+
+
+    let x =
+        event.clientX -
+        rect.left;
+
+
+    x =
+        Math.max(
+            0,
+            Math.min(
+                rect.width,
+                x
+            )
+        );
+
+
+    theme.hue =
+        (x / rect.width) * 360;
+
+
+    applyTheme();
+
+}
+
+
+hueSlider.addEventListener(
+    "pointerdown",
+    event => {
+
+        hueSlider.setPointerCapture(
+            event.pointerId
+        );
+
+        updateHue(event);
+
+    }
+);
+
+
+hueSlider.addEventListener(
+    "pointermove",
+    event => {
+
+        if (
+            event.buttons &
+            1
+        ) {
+
+            updateHue(event);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PRESETS
+========================================================= */
+
+document
+    .querySelectorAll(".preset")
+    .forEach(preset => {
+
+        preset.addEventListener(
+            "click",
+            () => {
+
+                theme.hue =
+                    Number(
+                        preset.dataset.hue
+                    );
+
+                theme.saturation =
+                    Number(
+                        preset.dataset.saturation
+                    );
+
+                theme.brightness =
+                    Number(
+                        preset.dataset.brightness
+                    );
+
+                applyTheme();
+
+            }
+        );
+
+    });
 
 
 /* =========================================================
@@ -695,10 +2162,21 @@ for (let i = 0; i < 70; i++) {
 function cleanFileName(name) {
 
     return name
-        .replace(/\.html$/i, "")
-        .replace(/[-_]+/g, " ")
-        .replace(/\b\w/g, char =>
-            char.toUpperCase()
+
+        .replace(
+            /\.html$/i,
+            ""
+        )
+
+        .replace(
+            /[-_]+/g,
+            " "
+        )
+
+        .replace(
+            /\b\w/g,
+            char =>
+                char.toUpperCase()
         );
 
 }
@@ -713,21 +2191,24 @@ async function getGameInfo(file) {
 
     const gameUrl =
         "play/" +
-        encodeURIComponent(file.name);
+        encodeURIComponent(
+            file.name
+        );
+
 
     let title =
-        cleanFileName(file.name);
+        cleanFileName(
+            file.name
+        );
+
 
     try {
-
-        /*
-         * Fetch the actual game HTML
-         */
 
         const response =
             await fetch(
                 file.download_url
             );
+
 
         if (!response.ok) {
 
@@ -742,10 +2223,6 @@ async function getGameInfo(file) {
             await response.text();
 
 
-        /*
-         * Parse the game HTML
-         */
-
         const doc =
             new DOMParser().parseFromString(
                 html,
@@ -753,12 +2230,10 @@ async function getGameInfo(file) {
             );
 
 
-        /*
-         * Find the actual <title>
-         */
-
         const pageTitle =
-            doc.querySelector("title");
+            doc.querySelector(
+                "title"
+            );
 
 
         if (pageTitle) {
@@ -766,11 +2241,6 @@ async function getGameInfo(file) {
             const detectedTitle =
                 pageTitle.textContent.trim();
 
-
-            /*
-             * Only use the detected title
-             * if it is actually useful.
-             */
 
             if (
                 detectedTitle &&
@@ -791,17 +2261,14 @@ async function getGameInfo(file) {
             file.name
         );
 
+
         console.log(
             "Detected title:",
             title
         );
 
-    } catch (error) {
 
-        /*
-         * If the game cannot be inspected,
-         * the filename title remains.
-         */
+    } catch (error) {
 
         console.warn(
             "Could not inspect game:",
@@ -865,10 +2332,6 @@ async function loadGames() {
             await response.json();
 
 
-        /*
-         * Only HTML game files
-         */
-
         const gameFiles =
             files.filter(file => {
 
@@ -889,11 +2352,6 @@ async function loadGames() {
             });
 
 
-        /*
-         * Read every game page
-         * to get its actual title.
-         */
-
         games =
             await Promise.all(
                 gameFiles.map(
@@ -902,10 +2360,6 @@ async function loadGames() {
                 )
             );
 
-
-        /*
-         * Render games
-         */
 
         renderGames();
 
@@ -981,25 +2435,27 @@ function renderGames() {
 
 
     gameGrid.innerHTML =
-        filtered.map(game => {
+        filtered
+            .map(game => {
 
-            return `
+                return `
 
-                <a
-                    class="game-card"
-                    href="${escapeAttribute(game.url)}"
-                    aria-label="${escapeAttribute(game.name)}"
-                >
+                    <a
+                        class="game-card"
+                        href="${escapeAttribute(game.url)}"
+                        aria-label="${escapeAttribute(game.name)}"
+                    >
 
-                    <div class="game-name">
-                        ${escapeHtml(game.name)}
-                    </div>
+                        <div class="game-name">
+                            ${escapeHtml(game.name)}
+                        </div>
 
-                </a>
+                    </a>
 
-            `;
+                `;
 
-        }).join("");
+            })
+            .join("");
 
 }
 
@@ -1011,11 +2467,31 @@ function renderGames() {
 function escapeHtml(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -1042,7 +2518,14 @@ searchInput.addEventListener(
 
 
 /* =========================================================
-   START
+   INITIALIZE THEME
+========================================================= */
+
+applyTheme();
+
+
+/* =========================================================
+   START GAME LIBRARY
 ========================================================= */
 
 loadGames();
@@ -1051,4 +2534,3 @@ loadGames();
 
 </body>
 </html>
-```
